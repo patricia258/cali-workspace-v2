@@ -13,6 +13,7 @@ const navigation:[Page,string,LucideIcon][]=[['overview','Visão Geral',LayoutDa
 function App(){
 const [page,setPage]=useState<Page>('overview');
 const [expanded,setExpanded]=useState(false);
+const [hoveredModule,setHoveredModule]=useState<Page|null>(null);
 const [profileMenu,setProfileMenu]=useState(false);
 const [teamTab,setTeamTab]=useState<'directory'|'structure'|'changes'|'indicators'>('directory');
 const [term,setTerm]=useState('');
@@ -25,11 +26,14 @@ const showNotice=(s:string)=>{setNotice(s);window.setTimeout(()=>setNotice(''),3
 const changePage=(id:Page)=>{setPage(id);setMobileNav(false);setChosen(null);setTerm('')};
 const filtered=people.filter(p=>p.name.toLowerCase().includes(term.toLowerCase())&&(dept==='Todas as áreas'||p.dept===dept));
 return <div className="app">
-<aside onMouseEnter={()=>setExpanded(true)} onMouseLeave={()=>setExpanded(false)} onFocus={()=>setExpanded(true)} className={'sidebar '+(expanded?'expanded ':'')+(mobileNav?'mobile-open':'')} aria-label="Menu lateral CALI">
-<div className="brand"><span className="brand-word">CALI</span><button aria-label="Alternar menu" className="nav-toggle" onClick={()=>setExpanded(!expanded)}>{expanded?<PanelLeftClose size={16}/>:<PanelLeftOpen size={16}/>}</button></div>
-<nav aria-label="Navegação principal">{navigation.map(([id,label,Icon])=><button key={id} onClick={()=>changePage(id)} className={'nav-link '+(page===id?'active':'')} title={label}><Icon size={17} strokeWidth={1.7}/><span>{label}</span></button>)}</nav>
-<div className="sidebar-bottom"><span className="gold-rule"/><button className="nav-link" onClick={()=>showNotice('Protótipo sem dados reais e sem conexão ao banco.')}><ShieldCheck size={17}/><span>Homologação segura</span></button><div className="sidebar-signature">RH PARA O NEGÓCIO</div></div>
-{expanded&&<div className="sidebar-flyout"><div className="flyout-heading"><strong>CALI Workspace</strong><button aria-label="Recolher menu" onClick={()=>setExpanded(false)}><PanelLeftClose size={16}/></button></div><div className="flyout-section-title">NAVEGAÇÃO</div>{navigation.map(([id,label,Icon])=><button key={id} className={'flyout-link '+(page===id?'selected':'')} onClick={()=>{changePage(id);setExpanded(false)}}><Icon size={16} strokeWidth={1.65}/><span>{label}</span><ChevronRight size={13}/></button>)}<div className="flyout-foot">CALI RH <span>·</span> Área de homologação</div></div>}
+<aside onMouseLeave={()=>{setExpanded(false);setHoveredModule(null)}} className={'sidebar '+(mobileNav?'mobile-open':'')} aria-label="Menu lateral CALI">
+<div className="brand"><span className="brand-word">CALI</span></div>
+<nav aria-label="Navegação principal">{navigation.map(([id,label,Icon])=><button key={id} onMouseEnter={()=>{setHoveredModule(id);setExpanded(id==='team')}} onFocus={()=>{setHoveredModule(id);setExpanded(id==='team')}} onClick={()=>{changePage(id);if(id!=='team'){setExpanded(false);setHoveredModule(null)}else{setExpanded(true);setHoveredModule(id)}}} className={'nav-link '+(page===id?'active':'')} title={label} aria-label={label}><Icon size={17} strokeWidth={1.6}/></button>)}</nav>
+<div className="sidebar-bottom"><span className="gold-rule"/><button className="nav-link" title="Ambiente de testes, sem dados reais" aria-label="Informações de homologação" onClick={()=>showNotice('Protótipo sem dados reais e sem conexão ao banco.')}><ShieldCheck size={17}/></button></div>
+{expanded&&hoveredModule==='team'&&<div className="sidebar-flyout" onMouseEnter={()=>{setHoveredModule('team');setExpanded(true)}}>
+<div className="flyout-heading"><strong>Equipe</strong><span className="flyout-context">Áreas do módulo</span></div>
+{([['directory','Diretório'],['structure','Estrutura organizacional'],['changes','Movimentações'],['indicators','Indicadores']] as const).map(([id,label])=><button key={id} className={'flyout-link '+(teamTab===id?'selected':'')} onClick={()=>{changePage('team');setTeamTab(id);setExpanded(false);setHoveredModule(null)}}><span>{label}</span>{teamTab===id?<CheckCircle2 size={14}/>:<ChevronRight size={13}/>}</button>)}
+</div>}
 </aside><main className="main">
 <header className="topbar"><button className="mobile-menu" onClick={()=>setMobileNav(!mobileNav)} aria-label="Menu">{mobileNav?<X size={19}/>:<Menu size={19}/>}</button><div className="top-left"><span className="workspace-label">CALI <span>WORKSPACE</span></span></div><div className="top-actions"><div className="global-search"><Search size={15}/><span>Buscar no Workspace</span><kbd>⌘ K</kbd></div><button aria-label="Notificações" onClick={()=>showNotice('As notificações reais serão integradas após a homologação.')} className="icon-button"><Bell size={17}/><i/></button><div className="profile-holder"><button aria-expanded={profileMenu} onClick={()=>setProfileMenu(!profileMenu)} className="profile"><span className="avatar small">CL</span><span>Admin CALI</span><ChevronDown size={13}/></button>{profileMenu&&<div className="profile-dropdown"><strong>Perfil de demonstração</strong><span>Admin CALI · Consultoria</span><button onClick={()=>{setProfileMenu(false);showNotice('Sem sessão ativa: saída disponível após integração.')}}>Sair <ArrowRight size={14}/></button></div>}</div></div></header>
 <div className="content">
