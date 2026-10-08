@@ -41,3 +41,26 @@
 .profile-dropdown{position:absolute;right:0;top:calc(100% + 14px);background:#fff;min-width:215px;z-index:45;border:1px solid #e9ded6;box-shadow:0 12px 30px #34202121;border-radius:9px;padding:13px;display:flex;flex-direction:column;gap:8px}
 .profile-dropdown strong{font-size:11px}.profile-dropdown span{font-size:10px;color:#867c75}.profile-dropdown button{display:flex;justify-content:space-between;align-items:center;border:0;border-top:1px solid #efeae7;padding:12px 0 0;background:none;color:#5a1e2d;font-weight:600}
 .topbar{position:relative;z-index:24}
+
+/* Sidebar V2 slim rail + overlay flyout: inspirado na densidade das referências, identidade própria CALI. */
+@media(min-width:851px){
+ .sidebar,.sidebar.expanded{width:56px;min-width:56px;overflow:visible;transition:none}
+ .sidebar .brand{height:68px;min-height:68px}
+ .sidebar .brand-word{font-size:11px;letter-spacing:1px;transform:rotate(-90deg);white-space:nowrap}
+ .sidebar nav{padding:9px 7px;gap:5px}
+ .sidebar .nav-link,.sidebar.expanded .nav-link{min-height:37px;width:42px;border-radius:8px;justify-content:center;padding:0;gap:0}
+ .sidebar nav .nav-link svg{width:16px;height:16px;stroke-width:1.55}
+ .sidebar .nav-link span,.sidebar.expanded .nav-link span{display:none}
+ .sidebar .sidebar-bottom{padding:8px 6px 13px}
+ .sidebar .sidebar-bottom .nav-link{width:42px}
+ .sidebar .sidebar-signature{display:none}
+ .sidebar .gold-rule{margin:0 7px 10px}
+}
+.sidebar-flyout{position:absolute;top:8px;left:calc(100% - 1px);width:240px;background:#fff;border:1px solid #e9e2db;border-radius:0 13px 13px 0;box-shadow:10px 12px 32px #2f1c2623;color:#352e2d;padding:14px 12px 15px;z-index:80;max-height:calc(100vh - 16px);overflow-y:auto}
+.flyout-heading{display:flex;align-items:center;justify-content:space-between;padding:6px 7px 19px;border-bottom:1px solid #eee9e4;font-size:13px}
+.flyout-heading strong{color:#5a1e2d}.flyout-heading button{border:0;background:#f6f2ee;width:26px;height:26px;border-radius:6px;display:grid;place-items:center;color:#6b514f}
+.flyout-section-title{font-size:9px;letter-spacing:1.4px;color:#aa9184;font-weight:700;padding:19px 9px 9px}
+.flyout-link{width:100%;border:0;background:transparent;display:flex;align-items:center;gap:11px;padding:12px 10px;border-radius:8px;font-size:12px;color:#655b57;text-align:left}
+.flyout-link>span{flex:1}.flyout-link svg:last-child{color:#b5a49b}.flyout-link.selected{background:#f7f1ef;color:#5a1e2d;font-weight:700}.flyout-link:hover{background:#faf6f3}
+.flyout-foot{border-top:1px solid #eee7e2;margin-top:15px;padding:14px 8px 3px;font-size:10px;color:#96867c}.flyout-foot span{color:#c19c6f}
+@media(max-width:850px){.sidebar-flyout{left:100%;width:min(240px,calc(100vw - 70px))}.sidebar.mobile-open{overflow:visible}.sidebar.mobile-open .brand-word{font-size:15px}}
