@@ -8,21 +8,21 @@ const kinds=['Dúvida','Mudança de contexto','Solicitação','Ocorrência'];
 const quick=[['Próxima reunião','calendar'],['Horas do ciclo','hours'],['Validações','validation'],['Relatórios','reports']];
 const people=[['MC','Mariana','Ativa','green'],['PR','Pedro','Ativo','green'],['CF','Camila','Em férias','yellow'],['RG','Rafael','Ativo','green']];
 export default function ClientHome({navigate}:Props){
- const [chat,setChat]=useState(false),[min,setMin]=useState(false),[kind,setKind]=useState('Dúvida'),[message,setMessage]=useState(''),[toast,setToast]=useState(''),[menu,setMenu]=useState<'frentes'|'alerts'|null>(null),[detail,setDetail]=useState<string|null>(null);
+ const [chat,setChat]=useState(false),[min,setMin]=useState(false),[kind,setKind]=useState('Dúvida'),[message,setMessage]=useState(''),[toast,setToast]=useState(''),[menu,setMenu]=useState<'frentes'|null>(null),[detail,setDetail]=useState<string|null>(null);
  const say=(s:string)=>{setToast(s);window.setTimeout(()=>setToast(''),4200)};
  return <div className="client-home">
  <div className="ch-toolbar"><div className="ch-area"><span className="ch-area-mark"/><span><small>ÁREA DA EMPRESA</small><strong>Início</strong></span></div><div className="ch-tools">
  <button aria-label="Abrir agenda" className="ch-tool gold" onClick={()=>navigate('calendar')}><CalendarPlus size={17}/></button>
  <button className="ch-tool pill" onClick={()=>setMenu(menu==='frentes'?null:'frentes')}><BriefcaseBusiness size={17}/> Frentes</button>
- <button aria-label="Documentos" className="ch-tool" onClick={()=>navigate('documents')}><FileText size={17}/><span className="ch-badge">1</span></button>
- <button aria-label="Tema claro" className="ch-tool" onClick={()=>say('A V2 está sendo construída exclusivamente no tema claro.')}><Sun size={17}/></button>
- <button aria-label="Notificações" className="ch-tool" onClick={()=>setMenu(menu==='alerts'?null:'alerts')}><Bell size={17}/><span className="ch-badge">1</span></button>
- <button aria-label="Sair" className="ch-tool" onClick={()=>say('Esta é uma demonstração; não há sessão de cliente para encerrar.')}><LogOut size={17}/></button>
+ 
+ 
+ 
+ 
  </div></div>
  {menu&&<div className="ch-menu"><button onClick={()=>setMenu(null)} aria-label="Fechar"><X size={14}/></button><strong>{menu==='frentes'?'Frentes contratadas':'Notificações'}</strong><p>{menu==='frentes'?'Estrutura e governança · Desenvolvimento de liderança · Processos de pessoas':'Uma validação fictícia aguarda seu retorno. O ambiente ainda não está conectado aos dados reais.'}</p></div>}
  <div className="ch-content">
  <div className="ch-greeting"><div><span className="ch-overline">SUA PARCERIA COM A CALI</span><h1>Olá, Paula.</h1><p>Veja o que aconteceu e o que vem a seguir na sua assessoria.</p></div><div className="ch-executive"><span className="ch-executive-photo">PL</span><div><small>RESPONSÁVEL EXECUTIVA DA CONTA</small><strong>Patrícia Lima</strong><span>People Advisory Executive</span></div></div></div>
- <section className="ch-contract"><div className="ch-contract-top"><div className="ch-contract-name"><div className="ch-company-logo">A<span>·</span></div><div><small>SUA CONTRATAÇÃO</small><h2>CALI Partner</h2><span>Aurora Tecnologia</span></div></div><div className="ch-contract-figures"><div><strong>0h</strong><span>consumidas no mês · 0%</span></div><div><strong>15h</strong><span>contratadas no mês</span></div></div></div><div className="ch-contract-progress"><div className="ch-progress-line"><span/></div><div><span>0h</span><span>50%</span><span>15h</span></div></div></section>
+ <section className="ch-contract"><div className="ch-contract-top"><div className="ch-contract-name"><div className="ch-company-logo">A<span>·</span></div><div><small>SUA CONTRATAÇÃO</small><h2>CALI Partner</h2><span>Assessoria estratégica mensal</span></div></div><div className="ch-contract-figures"><div><strong>0h</strong><span>consumidas no mês · 0%</span></div><div><strong>15h</strong><span>contratadas no mês</span></div></div></div><div className="ch-contract-progress"><div className="ch-progress-line"><span/></div><div><span>0h</span><span>50%</span><span>15h</span></div></div></section>
  <div className="ch-three"><section className="ch-surface ch-deliveries"><h3>Entregas do ciclo</h3><div className="ch-delivery-inside"><div><strong className="ch-big">4</strong><p>entregas no projeto atual</p></div><div className="ch-donut"><span>0%</span></div><div className="ch-legend"><span><i className="green"/> Aprovadas <b>0</b></span><span><i className="yellow"/> Pendentes <b>4</b></span><span><i className="red"/> Canceladas <b>0</b></span></div></div></section>
  <section className="ch-surface ch-feeling"><h3>Percepção do trabalho <span>· mês atual</span></h3><div className="ch-feeling-inner"><div><p><Star size={17} color="#bb5372"/> <strong>0 avaliações recebidas</strong></p><p><Check size={17} color="#1b927f"/> Aguardando a primeira</p></div><div className="ch-no-rating"><strong>—</strong><small>Sem nota</small></div></div><small className="ch-subnote">De entregas ou ocorrências</small></section>
  <section className="ch-surface ch-completion"><h3>Conclusão do trabalho <span>· mês atual</span></h3><div className="ch-complete-line"><strong className="ch-big">0%</strong><div className="ch-color-bars"><i/><i/><i/><i/><i/></div></div><p>0 de 0 atividades concluídas entre entregas e ocorrências.</p></section></div>
