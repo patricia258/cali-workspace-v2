@@ -26,3 +26,18 @@
 .hours-ledger h2,.detail-drawer h2{font-family:Inter,system-ui,sans-serif}
 @media(max-width:1150px){.overview-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.overview-layout{grid-template-columns:repeat(2,minmax(0,1fr))}.overview-layout>.executive{grid-column:1/-1}}
 @media(max-width:750px){.overview-layout{grid-template-columns:1fr}.overview-layout>.executive{grid-column:auto}.overview-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.overview-metric{padding:11px}.overview-metric strong{font-size:16px}}
+
+/* V2 polish: sidebar gradient, automatic hover expansion, bounded footer and squared profile imagery */
+.sidebar{background:linear-gradient(175deg,#5a1e2d 0%,#642a3b 42%,#785044 74%,#b58c52 100%);overflow:hidden}
+.sidebar .brand{min-height:74px}.sidebar .nav-toggle{opacity:0;pointer-events:none}
+.sidebar .sidebar-bottom{padding:9px 8px 17px;min-width:0;overflow:hidden}
+.sidebar .sidebar-bottom .nav-link{width:100%;overflow:hidden;font-size:10px;gap:8px}
+.sidebar:not(.expanded) .sidebar-bottom .nav-link{padding:0;justify-content:center}
+.sidebar .sidebar-signature{overflow:hidden;white-space:nowrap}
+.sidebar.expanded .sidebar-signature{font-size:8px;letter-spacing:1px}
+.sidebar .gold-rule{border-color:#e4c17b80}
+.profile-holder{position:relative}
+.profile .avatar,.avatar.small{border-radius:7px;background:#eadbd5}
+.profile-dropdown{position:absolute;right:0;top:calc(100% + 14px);background:#fff;min-width:215px;z-index:45;border:1px solid #e9ded6;box-shadow:0 12px 30px #34202121;border-radius:9px;padding:13px;display:flex;flex-direction:column;gap:8px}
+.profile-dropdown strong{font-size:11px}.profile-dropdown span{font-size:10px;color:#867c75}.profile-dropdown button{display:flex;justify-content:space-between;align-items:center;border:0;border-top:1px solid #efeae7;padding:12px 0 0;background:none;color:#5a1e2d;font-weight:600}
+.topbar{position:relative;z-index:24}
