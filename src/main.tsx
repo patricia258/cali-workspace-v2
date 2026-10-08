@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import type {LucideIcon} from 'lucide-react';
 import {createRoot} from 'react-dom/client';
 import {LayoutDashboard,Users,Clock3,CalendarDays,MessageCircleMore,FolderOpen,FileBarChart2,PanelLeftClose,PanelLeftOpen,Search,Bell,ChevronDown,ChevronRight,ArrowUpRight,Filter,Plus,Download,ArrowRight,CheckCircle2,AlertCircle,ChartNoAxesCombined,Building2, ListFilter, Menu, X, MoreHorizontal, BriefcaseBusiness,History,Info,ShieldCheck} from 'lucide-react';
 import './styles.css';
