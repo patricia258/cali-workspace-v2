@@ -183,3 +183,5 @@
 .v4-project-stats>div:nth-child(2) strong{color:#5a1e2d}
 .v4-project-stats>div:nth-child(3) strong{color:#b58c52}
 .v4-project-stats>div:nth-child(4) strong{color:#8869b2}
+
+.ap-switch-trigger{border:1px solid #e9d9ce;background:#fff8f0;color:#5a1e2d;border-radius:7px;padding:8px 10px;display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:700;cursor:pointer}
