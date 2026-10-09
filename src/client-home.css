@@ -24,3 +24,28 @@
 .ch-bulletin-v4 .ch-bulletin-foot span{display:flex;gap:5px;align-items:center}
 @media(max-width:920px){.ch-bulletin-v4 .ch-bulletin-grid{grid-template-columns:repeat(2,minmax(0,235px))}}
 @media(max-width:580px){.ch-bulletin-v4 .ch-bulletin-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.ch-bulletin-v4 .ch-bulletin-meta{padding:10px}.ch-bulletin-v4 .ch-bulletin-picture{height:94px}.ch-bulletin-v4 .ch-bulletin-foot{flex-direction:column}.ch-bulletin-v4{padding:14px}}
+
+
+/* Home V5: mural compacto à esquerda, pessoas à direita, agenda acima do projeto */
+.ch-home-spotlight{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(310px,1fr);gap:14px;align-items:stretch;margin:17px 0}
+.ch-home-spotlight .ch-bulletin-v4{margin:0;min-width:0;padding:18px}
+.ch-home-spotlight .ch-bulletin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.ch-home-spotlight .ch-bulletin-item{width:100%;min-width:0}.ch-home-spotlight .ch-bulletin-meta{min-height:112px;padding:10px 9px 8px}
+.ch-home-spotlight .ch-bulletin-meta strong{font-size:11px}.ch-home-spotlight .ch-bulletin-author{font-size:9px}.ch-home-spotlight .ch-bulletin-picture{height:118px}
+.ch-home-spotlight .ch-bulletin-foot{padding:9px 7px;flex-wrap:wrap;font-size:9px}.ch-home-spotlight .ch-bulletin-heading{align-items:flex-start;min-height:55px}
+.ch-team-panel{border:1px solid #e9ded4;border-radius:12px;background:white;padding:18px;min-width:0;display:flex;flex-direction:column}
+.ch-team-panel-head{display:flex;align-items:start;justify-content:space-between;gap:10px}.ch-team-panel-head small{color:#ab8151;letter-spacing:1.2px;font-weight:800;font-size:10px}
+.ch-team-panel-head h3{margin:6px 0;font-size:17px}.ch-team-panel-head p{color:#95877d;font-size:10px;margin:0}.ch-team-panel-head .ch-link{flex-shrink:0}
+.ch-team-overview{display:flex;flex-wrap:wrap;align-items:center;gap:7px;padding:13px 0 12px;margin-top:8px;border-bottom:1px solid #f0e8e2}
+.ch-team-overview>div{display:flex;align-items:baseline;gap:5px;margin-right:auto}.ch-team-overview b{font-size:23px;color:#5a1e2d}.ch-team-overview>div span{font-size:10px;color:#8d8177}
+.ch-team-status{font-size:9px;padding:5px 7px;border-radius:5px;white-space:nowrap}.ch-team-status.ok{background:#e6f5ee;color:#2c8e67}.ch-team-status.vacation{background:#fff0d7;color:#996d2f}.ch-team-status.away{background:#fce9ed;color:#b34c67}
+.ch-team-members button{width:100%;display:flex;gap:9px;align-items:center;padding:8px 0;border:0;border-bottom:1px solid #f3ece8;text-align:left;background:transparent;cursor:pointer}.ch-team-members button>span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.ch-team-members strong{font-size:11px}.ch-team-members small{font-size:9px;color:#92857b}.ch-team-avatar{width:31px;height:31px;flex-shrink:0;border-radius:7px;background:#e9d7d4;color:#5a1e2d;display:grid;place-items:center;font-size:10px;font-weight:800}.ch-team-avatar.blue{background:#dce9f6;color:#466b93}.ch-team-avatar.rose{background:#f6e0e8;color:#95556b}
+.ch-team-milestones{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:13px}.ch-team-milestones>div{display:flex;align-items:center;gap:8px;background:#faf7f4;padding:9px;border-radius:8px;min-width:0}
+.ch-team-milestones>div>span:last-child{min-width:0;display:flex;flex-direction:column;gap:3px}.ch-team-milestones strong{font-size:10px}.ch-team-milestones small{font-size:9px;color:#8c8076}
+.ch-team-milestone-icon{display:grid;place-items:center;flex-shrink:0;width:28px;height:28px;border-radius:7px;background:#efeaf7;color:#8764a4}.ch-team-milestone-icon.gold{background:#fff0d5;color:#ba8b32}
+.ch-team-demo-note{display:block;color:#b3a79d;font-size:9px;margin-top:auto;padding-top:10px}
+.ch-mid{grid-template-columns:1fr 1fr}.ch-home-agenda{margin:0 0 14px}.ch-home-agenda .ch-next{padding:19px 22px;min-height:0}
+.ch-home-agenda .ch-event{max-width:620px}.ch-bottom .ch-side-stack{height:100%}
+@media(max-width:1100px){.ch-home-spotlight{grid-template-columns:1fr}.ch-team-milestones{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.ch-home-spotlight .ch-bulletin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ch-team-milestones{grid-template-columns:1fr}.ch-home-spotlight .ch-bulletin-picture{height:100px}}
