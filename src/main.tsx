@@ -17,7 +17,7 @@ const activities=[{time:'09:00',type:'Reunião',title:'Alinhamento da estrutura 
 const timeEntries=[{date:'08 out',category:'Reunião executiva',context:'Alinhamento com diretoria',detail:'Governança de pessoas e prioridades do ciclo',minutes:'1h 30m',work:'Estratégia'},{date:'07 out',category:'Análise técnica',context:'Mapa da estrutura',detail:'Revisão de vínculos, responsabilidades e alçadas',minutes:'2h 15m',work:'Organização'},{date:'06 out',category:'Documento',context:'Política de feedback',detail:'Construção e revisão de diretrizes',minutes:'1h 45m',work:'Desenvolvimento'},{date:'03 out',category:'Acompanhamento',context:'Decisões e encaminhamentos',detail:'Preparação de leitura executiva para o cliente',minutes:'1h 10m',work:'Assessoria'},{date:'02 out',category:'Reunião',context:'Check-in de projeto',detail:'Revisão do cronograma e acordos',minutes:'0h 50m',work:'Estratégia'}];
 const navigation:[Page,string,LucideIcon][]=[['overview','Visão Geral',LayoutDashboard],['team','Equipe',Users],['hours','Horas',Clock3],['calendar','Calendário',CalendarDays],['records','Ocorrências',MessageCircleMore],['documents','Documentos',FolderOpen],['reports','Relatórios',FileBarChart2],['projects','Projetos',BriefcaseBusiness],['notices','Avisos',Megaphone]];
 function App(){
-const [adminMode,setAdminMode]=useState(false);
+const [adminMode,setAdminMode]=useState(()=>new URLSearchParams(window.location.search).get('area')==='admin');
 const [page,setPage]=useState<Page>('overview');
 const [expanded,setExpanded]=useState(false);
 const [hoveredModule,setHoveredModule]=useState<Page|null>(null);
