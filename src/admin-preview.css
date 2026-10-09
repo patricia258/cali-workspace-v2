@@ -10,3 +10,22 @@
 .ap-client-subtabs{display:flex;flex-wrap:wrap;gap:6px;padding-bottom:16px;border-bottom:1px solid #eadbd0}
 .ap-client-subtabs button{padding:8px 10px;border:1px solid #e8dbd1;background:white;color:#86766b;border-radius:6px;font-size:10px}
 .ap-client-subtabs button.selected{background:#5a1e2d;color:white;border-color:#5a1e2d}
+
+.ap-registration-overlay{position:fixed;inset:0;z-index:800;background:#161018b8;display:grid;place-items:center;padding:22px;backdrop-filter:blur(4px)}
+.ap-registration-modal{display:flex;flex-direction:column;width:min(1090px,100%);max-height:min(830px,94dvh);background:#fffdfb;border:1px solid #e5d9d0;border-radius:16px;box-shadow:0 24px 95px #28172440;overflow:hidden;color:#302b29}
+.ap-registration-modal>header{padding:27px 30px;background:linear-gradient(112deg,#f6f0eb,#fff);display:flex;justify-content:space-between;align-items:flex-start;gap:15px;border-bottom:1px solid #ebded4}
+.ap-registration-modal>header small{font-size:10px;font-weight:800;letter-spacing:.14em;color:#9f7349}
+.ap-registration-modal>header h2{font-size:25px;margin:6px 0 8px;letter-spacing:-.04em;color:#5a1e2d}
+.ap-registration-modal>header p{margin:0;color:#867d77;font-size:12px}
+.ap-registration-modal>header>button{border:0;background:#f4ebe6;border-radius:7px;padding:8px;display:grid;place-items:center}
+.ap-registration-tabs{display:flex;gap:6px;padding:10px 28px;border-bottom:1px solid #ede4df;overflow-x:auto}
+.ap-registration-tabs button{flex:0 0 auto;border:0;background:transparent;padding:10px 13px;border-radius:7px;font-weight:600;color:#716762}
+.ap-registration-tabs button.active{background:#5a1e2d;color:white}
+.ap-registration-content{overflow:auto;min-height:0;padding:22px 35px 30px;flex:1}
+.ap-registration-hint{font-size:11px;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:#a3805a;margin-bottom:15px}
+.ap-registration-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px}
+.ap-registration-fields label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700}
+.ap-registration-fields input,.ap-registration-fields select{width:100%;background:#fff;border:1px solid #e5d9d0;color:#302b29;min-height:43px;padding:10px 12px;border-radius:7px;outline-offset:2px}
+.ap-registration-modal footer{border-top:1px solid #ede4df;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;gap:15px;background:#faf7f4;color:#8a8079}
+.ap-registration-modal footer>div{display:flex;gap:8px}
+@media(max-width:700px){.ap-registration-overlay{padding:8px}.ap-registration-fields{grid-template-columns:1fr}.ap-registration-modal>header{padding:18px}.ap-registration-content{padding:18px}.ap-registration-modal footer{padding:12px;flex-wrap:wrap}}
