@@ -4,14 +4,15 @@ import {createRoot} from 'react-dom/client';
 import {LayoutDashboard,Users,Clock3,CalendarDays,MessageCircleMore,FolderOpen,FileBarChart2,PanelLeftClose,PanelLeftOpen,Search,Bell,ChevronDown,ChevronRight,ArrowUpRight,Filter,Plus,Download,ArrowRight,CheckCircle2,AlertCircle,ChartNoAxesCombined,Building2, ListFilter, Menu, X, MoreHorizontal, BriefcaseBusiness,History,Info,ShieldCheck} from 'lucide-react';
 import './styles.css';
 import ClientHome from './ClientHome';
+import DeliverablesView from './DeliverablesView';
 import {ProfilePreview,PersonPreview,AddPersonPreview,TeamStats} from './TeamEnhancements';
 import {CalendarView,RecordsView,DocumentsView,ReportsView} from './WorkflowViews';
-type Page='overview'|'team'|'hours'|'calendar'|'records'|'documents'|'reports';
+type Page='overview'|'team'|'hours'|'calendar'|'records'|'documents'|'reports'|'deliverables';
 const demo={company:'Aurora Tecnologia',plan:'CALI Partner',month:'Outubro de 2026'};
 const people=[{name:'Mariana Costa',job:'Head de Produto',dept:'Produto',leader:'Carolina Almeida',since:'12/03/2022',status:'Ativa',initials:'MC'},{name:'Pedro Ribeiro',job:'Analista de Dados',dept:'Tecnologia',leader:'Gabriel Martins',since:'18/01/2024',status:'Ativo',initials:'PR'},{name:'Camila Fernandes',job:'Analista de People',dept:'Pessoas',leader:'Carolina Almeida',since:'09/09/2025',status:'Ativa',initials:'CF'},{name:'Rafael Gomes',job:'Designer',dept:'Produto',leader:'Mariana Costa',since:'21/05/2023',status:'Ativo',initials:'RG'},{name:'Bianca Oliveira',job:'Coordenadora Comercial',dept:'Comercial',leader:'Carolina Almeida',since:'04/11/2021',status:'Ativa',initials:'BO'},{name:'André Santos',job:'Engenheiro de Software',dept:'Tecnologia',leader:'Gabriel Martins',since:'15/02/2024',status:'Ativo',initials:'AS'}];
 const activities=[{time:'09:00',type:'Reunião',title:'Alinhamento da estrutura de liderança',detail:'Diretoria · Encontro online',done:true},{time:'11:30',type:'Análise',title:'Leitura de movimentações do mês',detail:'Equipe · People Analytics',done:true},{time:'14:00',type:'Entrega',title:'Revisão do desenho de papéis',detail:'Projeto Estrutura & Governança',done:false},{time:'16:00',type:'Cliente',title:'Devolutiva de prioridades',detail:'Aurora Tecnologia · Meet',done:false}];
 const timeEntries=[{date:'08 out',category:'Reunião executiva',context:'Alinhamento com diretoria',detail:'Governança de pessoas e prioridades do ciclo',minutes:'1h 30m',work:'Estratégia'},{date:'07 out',category:'Análise técnica',context:'Mapa da estrutura',detail:'Revisão de vínculos, responsabilidades e alçadas',minutes:'2h 15m',work:'Organização'},{date:'06 out',category:'Documento',context:'Política de feedback',detail:'Construção e revisão de diretrizes',minutes:'1h 45m',work:'Desenvolvimento'},{date:'03 out',category:'Acompanhamento',context:'Decisões e encaminhamentos',detail:'Preparação de leitura executiva para o cliente',minutes:'1h 10m',work:'Assessoria'},{date:'02 out',category:'Reunião',context:'Check-in de projeto',detail:'Revisão do cronograma e acordos',minutes:'0h 50m',work:'Estratégia'}];
-const navigation:[Page,string,LucideIcon][]=[['overview','Visão Geral',LayoutDashboard],['team','Equipe',Users],['hours','Horas',Clock3],['calendar','Calendário',CalendarDays],['records','Ocorrências',MessageCircleMore],['documents','Documentos',FolderOpen],['reports','Relatórios',FileBarChart2]];
+const navigation:[Page,string,LucideIcon][]=[['overview','Visão Geral',LayoutDashboard],['team','Equipe',Users],['hours','Horas',Clock3],['calendar','Calendário',CalendarDays],['records','Ocorrências',MessageCircleMore],['documents','Documentos',FolderOpen],['reports','Relatórios',FileBarChart2],['deliverables','Entregáveis',BriefcaseBusiness]];
 function App(){
 const [page,setPage]=useState<Page>('overview');
 const [expanded,setExpanded]=useState(false);
@@ -52,6 +53,7 @@ return <div className="app">
 {page==='records'&&<RecordsView/>}
 {page==='documents'&&<DocumentsView navigate={changePage}/>}
 {page==='reports'&&<ReportsView/>}
+{page==='deliverables'&&<DeliverablesView/>}
 </div></main>
 {chosen&&<PersonPreview person={people.find(p=>p.name===chosen)||people[0]} onClose={()=>setChosen(null)}/>}
 {profilePreview&&<ProfilePreview onClose={()=>setProfilePreview(false)}/>}
