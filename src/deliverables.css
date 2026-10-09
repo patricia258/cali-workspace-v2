@@ -57,3 +57,13 @@
 .dv-history-row small,.dv-history-footnote{font-size:10px;color:#a28d7d}
 @media(max-width:850px){.dv-modal-content .dv-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:550px){.dv-step{align-items:flex-start}.dv-step-state{white-space:normal}.dv-modal footer .dv-converse-bottom{font-size:10px}.dv-file-status{display:none}}
+
+
+/* Hierarquia da frente: código / título / orientação, sem colisão */
+.dv-project-title .dv-front-toggle{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:13px!important;line-height:1.3!important;overflow:hidden}
+.dv-project-title .dv-front-text{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:4px!important;min-width:0!important;flex:1 1 auto!important;white-space:normal!important}
+.dv-project-title .dv-front-text small{display:block!important;font-size:10px!important;line-height:1.25!important;letter-spacing:.4px!important}
+.dv-project-title .dv-front-text strong{display:block!important;font-size:14px!important;line-height:1.3!important;overflow-wrap:anywhere}
+.dv-project-title .dv-front-text em{display:block!important;font-size:10px!important;line-height:1.4!important;overflow-wrap:anywhere}
+.dv-project-title .dv-front-toggle>svg{margin-left:5px!important}
+@media(max-width:850px){.dv-project-title .dv-front-text strong{font-size:13px!important}}
