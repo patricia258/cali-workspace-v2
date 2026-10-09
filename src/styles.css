@@ -172,3 +172,14 @@
 .v4-deliverables-tab{margin-top:15px}.v4-deliverables-tab .dv>header,.v4-deliverables-tab .dv-toolbar{display:none}
 @media(max-width:900px){.v4-project-two{grid-template-columns:1fr}.v4-project-stats{grid-template-columns:repeat(2,1fr);gap:15px}.v4-project-stats>div:nth-child(2){border:0}}
 @media(max-width:650px){.v4-project-summary,.v4-project-editorial,.v4-project-action,.v4-project-schedule{padding:18px}.v4-schedule-head{flex-direction:column;align-items:flex-start}.v4-schedule-months{overflow-x:auto;grid-template-columns:repeat(8,50px)}}
+
+
+/* Linha superior delicada, sem barra espessa: semântica cromática padrão CALI */
+.v4-project-summary{border-top:3px solid #42b489}
+.v4-project-editorial{border-top:3px solid #7cb4d5}
+.v4-project-action{border-top:3px solid #b58c52}
+.v4-project-schedule{border-top:3px solid #aa8bd5}
+.v4-project-stats>div:nth-child(1) strong{color:#3b9f79}
+.v4-project-stats>div:nth-child(2) strong{color:#5a1e2d}
+.v4-project-stats>div:nth-child(3) strong{color:#b58c52}
+.v4-project-stats>div:nth-child(4) strong{color:#8869b2}
