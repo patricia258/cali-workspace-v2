@@ -10,6 +10,7 @@ const acts=[['09:00','Reunião de alinhamento','Aurora Tecnologia','Reunião','p
 const status=(t:string,tone='amber')=><span className={'ap-status '+tone}>{t}</span>;
 export default function AdminPreview({onClient}:{onClient:()=>void}){
  const [sidebarOpen,setSidebarOpen]=useState(false);const [section,setSection]=useState<Section>('overview'),[account,setAccount]=useState('Todas as contas'),[period,setPeriod]=useState('Outubro de 2026'),[drawer,setDrawer]=useState<string|null>(null),[tab,setTab]=useState('Resumo'),[query,setQuery]=useState(''),[noticeView,setNoticeView]=useState('Mural'),[projectView,setProjectView]=useState('Fluxo'),[noticeAck,setNoticeAck]=useState(false);
+ const [clientDetailTab,setClientDetailTab]=useState('Dados cadastrais');
  const active=sections.find(x=>x[0]===section)!;
  const rows=accounts.filter(a=>(account==='Todas as contas'||a.name===account)&&a.name.toLowerCase().includes(query.toLowerCase()));
  const open=(name:string)=>{setTab('Resumo');setDrawer(name)};
