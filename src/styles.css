@@ -89,3 +89,22 @@
 
 /* Refinamentos de precisão 08.10 */
 .v2-indicator-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.v2-indicator-actions>.outline-button,.v2-indicator-actions>select{height:36px;box-sizing:border-box;flex-shrink:0}.indicator-page .section-head{align-items:center!important}.v2-insights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0 0 18px;border:1px solid #e8ddd5;border-radius:9px;background:#fff;overflow:hidden}.v2-insights>div{padding:17px 19px;display:flex;flex-direction:column;gap:8px;border-right:1px solid #efe8e1;min-width:0}.v2-insights>div:last-child{border-right:0}.v2-insights strong{font-size:11px;color:#62514d}.v2-insights span{font-size:23px;font-weight:700;color:#5a1e2d;line-height:1.3}.v2-insights small{font-size:10px;color:#96857b;line-height:1.45}.ledger-summary>div{position:relative;padding-top:20px!important}.ledger-summary>div:before{content:"";height:2px!important;position:absolute;top:0;left:0;right:0;background:#b58c52}.ledger-summary>div:nth-child(1):before{background:#55b68a}.ledger-summary>div:nth-child(2):before{background:#76aecf}.ledger-summary>div:nth-child(3):before{background:#b58c52}.ledger-summary>div>span{background:transparent!important;color:#96857c!important;display:block!important;font-weight:400!important;width:auto!important;height:auto!important;padding:0!important}.v2-metrics>div:before{height:2px!important}@media(max-width:650px){.v2-insights{grid-template-columns:1fr}.v2-insights>div{border-right:0;border-bottom:1px solid #eee5dd}.v2-indicator-actions{width:100%}}
+
+
+/* V2: Projetos — contexto do cliente antes dos entregáveis */
+.v2-projects-page .page-head{margin-bottom:20px}
+.v2-project-context{border:1px solid #e7d8ca;background:#fff;border-radius:10px;padding:26px 28px;display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:17px}
+.v2-project-context small,.v2-project-columns section>small{font-size:10px;letter-spacing:1.2px;color:#ae885c;font-weight:700}
+.v2-project-context h2{font-size:21px;margin:10px 0;color:#342f2e}
+.v2-project-context p{font-size:12px;line-height:1.65;color:#81736d;max-width:720px;margin:0}
+.v2-project-columns{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:17px}
+.v2-project-columns section{border:1px solid #e7d8ca;background:#fff;border-radius:10px;padding:25px 27px}
+.v2-project-columns h3{font-size:17px;margin:13px 0 10px}
+.v2-project-columns p{font-size:12px;color:#83756e;line-height:1.6}
+.v2-project-columns p strong{color:#5a1e2d}
+.v2-project-meter{height:7px;background:#ede5df;overflow:hidden;border-radius:10px;margin:24px 0 11px}
+.v2-project-meter span{display:block;height:100%;border-radius:10px;background:#5a1e2d}
+.v2-project-meta{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:#957f71;margin-bottom:22px}
+.v2-project-columns button{display:inline-flex;align-items:center;gap:8px}
+.v2-projects-page>.soft-note{margin-top:20px}
+@media(max-width:750px){.v2-project-columns{grid-template-columns:1fr}.v2-project-context{flex-direction:column}.v2-project-meta{flex-wrap:wrap}}
