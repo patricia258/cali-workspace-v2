@@ -118,3 +118,14 @@
 .ap-profile-modal footer{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 25px;background:#faf6f1}
 .ap-profile-modal footer span{font-size:10px;color:#8f8179}
 .ap-profile-modal footer button{background:#5a1e2d;color:#fff;border:0;border-radius:7px;padding:10px 15px}
+
+/* Sidebar: dimensões, cores e comportamento reproduzidos da V2 cliente. */
+.ap-app .sidebar.ap-sidebar,.ap-app .sidebar.ap-sidebar.expanded{width:68px!important;min-width:68px!important;max-width:68px!important;flex-shrink:0!important;background:linear-gradient(170deg,#682637 0%,#4d1a29 62%,#391622 100%)!important}
+.ap-app .sidebar.ap-sidebar>.brand{height:75px;min-height:75px}
+.ap-app .sidebar.ap-sidebar .ap-logo{font:23px Inter,system-ui,sans-serif!important;letter-spacing:-1.4px!important;writing-mode:horizontal-tb!important;transform:none!important;color:white!important}
+.ap-app .sidebar.ap-sidebar nav{padding:20px 12px 8px!important;gap:5px!important}
+.ap-app .sidebar.ap-sidebar nav .nav-link{height:38px;min-height:38px;width:44px;padding:0!important;justify-content:center!important}
+.ap-app .sidebar.ap-sidebar nav .nav-link span{display:none!important}
+.ap-app .sidebar.ap-sidebar .sidebar-bottom{margin-top:auto;padding:10px 12px 16px;border:0}
+.ap-app .sidebar.ap-sidebar .sidebar-bottom .gold-rule{display:block;border-top:1px solid #a47763;margin:0 6px 12px}
+.ap-app .sidebar.ap-sidebar .sidebar-bottom .sidebar-signature{font-size:0!important}
