@@ -64,8 +64,8 @@
 @media(max-width:900px){.ap-app .ap-v2-search{display:none}.ap-app .ap-v2-topbar .top-actions{gap:9px}.ap-app .ap-v2-topbar{padding:0 14px}.ap-app .ap-head-product{font-size:0!important;padding:9px!important}.ap-app .ap-head-product svg{width:17px}}
 
 /* Sidebar do administrador: compacta e fixa como na V2 cliente */
-.ap-app .ap-sidebar,.ap-app .ap-sidebar.expanded{width:60px!important;min-width:60px!important;max-width:60px!important;background:linear-gradient(175deg,#5a1e2d 0%,#642a3b 42%,#785044 74%,#b58c52 100%)!important}
-.ap-app .ap-sidebar nav{padding:20px 8px 8px!important;gap:5px!important}
+.ap-app .ap-sidebar,.ap-app .ap-sidebar.expanded{width:68px!important;min-width:68px!important;max-width:68px!important;background:linear-gradient(175deg,#5a1e2d 0%,#642a3b 42%,#785044 74%,#b58c52 100%)!important}
+.ap-app .ap-sidebar nav{padding:20px 12px 8px!important;gap:5px!important}
 .ap-app .ap-sidebar nav button{width:44px!important;height:38px!important;padding:0!important;justify-content:center!important}
 .ap-app .ap-sidebar nav button span{display:none!important}
 .ap-app .ap-sidebar>.brand{height:75px}
@@ -101,3 +101,20 @@
 .ap-account-modal footer .ap-account-danger button{color:#9d5452;background:transparent;border-color:transparent}
 .ap-account-modal footer .ap-account-save{background:#5a1e2d;color:#fff;border-color:#5a1e2d}
 @media(max-width:720px){.ap-account-overlay{padding:8px}.ap-account-header{padding:17px;gap:8px}.ap-account-pills{display:none}.ap-account-fields{grid-template-columns:1fr}.ap-account-modal footer{flex-wrap:wrap}.ap-account-body{padding:15px}.ap-account-tabs{padding:8px}}
+
+/* Perfil admin como diálogo próprio, separado de ocorrências e contas */
+.ap-profile-overlay{position:fixed;inset:0;z-index:950;display:grid;place-items:center;padding:20px;background:#21141dbd;backdrop-filter:blur(4px)}
+.ap-profile-modal{width:min(540px,100%);background:#fffdfa;border:1px solid #e5d9d1;border-radius:13px;box-shadow:0 24px 70px #26162140;overflow:hidden;color:#302b29}
+.ap-profile-modal header{display:flex;align-items:center;gap:15px;padding:25px;border-bottom:1px solid #ece2db}
+.ap-profile-modal header>div:nth-child(2){flex:1}
+.ap-profile-avatar{width:54px;height:54px;border-radius:10px;background:#eadbd5;color:#5a1e2d;font-size:16px;font-weight:700;display:grid;place-items:center}
+.ap-profile-modal small{font-size:9px;font-weight:700;letter-spacing:1.3px;color:#b58c52}
+.ap-profile-modal h2{font-size:20px;margin:6px 0;color:#5a1e2d}
+.ap-profile-modal p{margin:0;font-size:11px;color:#8f8179}
+.ap-profile-modal header>button{border:0;background:#f3ede8;border-radius:7px;padding:8px;align-self:start}
+.ap-profile-details{padding:12px 25px 22px}
+.ap-profile-details>div{display:flex;justify-content:space-between;gap:15px;padding:15px 0;border-bottom:1px solid #eee7e0}
+.ap-profile-details span{color:#85776e}.ap-profile-details strong{font-weight:600;color:#403532}
+.ap-profile-modal footer{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 25px;background:#faf6f1}
+.ap-profile-modal footer span{font-size:10px;color:#8f8179}
+.ap-profile-modal footer button{background:#5a1e2d;color:#fff;border:0;border-radius:7px;padding:10px 15px}
