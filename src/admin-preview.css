@@ -173,3 +173,20 @@
 .ap-project-timeline-row>span,.ap-project-delivery-row>span:nth-child(2){display:flex;flex:1;flex-direction:column;gap:4px}.ap-project-timeline-row small,.ap-project-delivery-row small{color:#95867e}.ap-project-front{padding:15px;background:#f8f2ed;border:1px solid #eaded5;border-radius:8px;display:flex;align-items:center;justify-content:space-between;margin:15px 0}
 .ap-project-front>div{display:flex;flex-direction:column;gap:4px}.ap-project-front small{color:#93847b}.ap-project-delivery-row>svg{color:#8a4b60}.ap-project-deliverables .ap-pane-head>div:last-child{display:flex;gap:8px}.ap-project-deliverables .ap-pane-head button{border:1px solid #e7dcd3;border-radius:7px;padding:8px;color:#5a1e2d;background:white}
 @media(max-width:820px){.ap-project-toolbar{flex-direction:column;align-items:flex-start}.ap-project-stats{grid-template-columns:repeat(2,1fr)}.ap-project-months{grid-template-columns:repeat(8,85px)}}
+
+/* Projetos admin — composição sem duplicidade, seguindo cards V2 */
+.ap-app .ap-title-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.ap-app .ap-title-actions .ap-outline{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid #e5d9d1;border-radius:8px;color:#5a1e2d;padding:11px 13px;font-weight:700}
+.ap-project-context{display:flex;align-items:center;flex-wrap:wrap;gap:20px;padding:19px 24px;background:#fff;border:1px solid #e7ddd4;border-radius:11px}
+.ap-project-context>div:first-child{flex:1;min-width:210px}.ap-project-context small{font-size:10px;letter-spacing:1.1px;font-weight:800;color:#b58c52}.ap-project-context h2{margin:5px 0;font-size:23px}.ap-project-context p{margin:0;color:#897b72}
+.ap-project-context label{display:flex;flex-direction:column;gap:5px;font-size:10px;color:#8b786f}
+.ap-project-context select{background:#fff;border:1px solid #e5dbd2;border-radius:7px;padding:10px;min-width:190px;color:#45352f}
+.ap-project-context-status{align-self:center}.ap-projects-v2 .ap-project-summary{border:0;padding:0;background:transparent}
+.ap-projects-v2 .ap-project-heading{display:none}
+.ap-projects-v2 .ap-project-stats{margin:12px 0 5px;padding:0;border:0;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.ap-projects-v2 .ap-project-stats .ap-project-stat-card{border:1px solid #eadfd6;border-top:3px solid #599f84;border-radius:11px;background:#fff;padding:22px 17px;min-height:120px;gap:12px}
+.ap-projects-v2 .ap-project-stats .tone-1{border-top-color:#7b4160}.ap-projects-v2 .ap-project-stats .tone-2{border-top-color:#d8a54a}.ap-projects-v2 .ap-project-stats .tone-3{border-top-color:#8c72b7}
+.ap-projects-v2 .ap-project-stats .ap-project-stat-card strong{font-size:28px}.ap-projects-v2 .ap-project-stats .ap-project-stat-card span{font-size:11px}
+.ap-projects-v2 .ap-exec-grid>.ap-pane:first-child{border-top:3px solid #6fabc9}.ap-projects-v2 .ap-exec-grid>.ap-pane:last-child{border-top:3px solid #b58c52}
+@media(max-width:850px){.ap-projects-v2 .ap-project-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.ap-project-context{align-items:stretch}}
+@media(max-width:480px){.ap-projects-v2 .ap-project-stats{gap:8px}.ap-projects-v2 .ap-project-stats .ap-project-stat-card{padding:15px 10px}}
