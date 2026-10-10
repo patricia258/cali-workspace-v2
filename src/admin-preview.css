@@ -190,3 +190,46 @@
 .ap-projects-v2 .ap-exec-grid>.ap-pane:first-child{border-top:3px solid #6fabc9}.ap-projects-v2 .ap-exec-grid>.ap-pane:last-child{border-top:3px solid #b58c52}
 @media(max-width:850px){.ap-projects-v2 .ap-project-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.ap-project-context{align-items:stretch}}
 @media(max-width:480px){.ap-projects-v2 .ap-project-stats{gap:8px}.ap-projects-v2 .ap-project-stats .ap-project-stat-card{padding:15px 10px}}
+
+/* Cronograma admin V2: layout único por mês, frente e entregável */
+.ap-project-context{align-items:end}
+.ap-project-context .ap-project-status-picker,.ap-project-context .ap-project-selector{min-width:205px}
+.ap-project-context .ap-project-status-picker select{min-height:45px;min-width:215px;border:1px solid #d9e5dc;border-radius:9px;padding:11px 15px;background:#eff8f1;color:#347c58;font-size:13px;font-weight:750}
+.ap-admin-roadmap{border-top:3px solid #a68ad4!important}
+.ap-admin-roadmap .ap-pane-head{align-items:center}
+.ap-admin-roadmap .ap-pane-head p{font-size:11px;color:#918278;margin:6px 0 0}
+.ap-admin-roadmap .ap-project-months{display:grid;grid-template-columns:repeat(8,minmax(64px,1fr));margin:21px 0 16px;gap:7px}
+.ap-admin-roadmap .ap-project-months button{border:0;border-radius:8px;background:#f6f2ef;color:#988a80;padding:11px 6px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.ap-admin-roadmap .ap-project-months button.active{background:#5a1e2d;color:#fff}
+.ap-admin-roadmap .ap-project-months button small{font-size:10px;color:inherit}
+.ap-roadmap-front{border:1px solid #e8dcd3;border-radius:10px;overflow:hidden}
+.ap-roadmap-front-header{width:100%;display:flex;align-items:center;gap:13px;border:0;background:#faf7f5;padding:16px;text-align:left;color:#3b2b2a}
+.ap-roadmap-front-header>span:nth-child(2){display:flex;flex-direction:column;gap:3px;flex:1}
+.ap-roadmap-front-header>span:nth-child(2) small{font-size:10px;color:#9b8678}
+.ap-roadmap-front-header>span:nth-child(2) strong{font-size:14px}
+.ap-roadmap-front-icon{width:37px;height:37px;border-radius:8px;background:#f7eae9;color:#5a1e2d;display:grid;place-items:center}
+.ap-roadmap-front-header .ap-status{margin-right:10px}
+.ap-roadmap-head,.ap-roadmap-row{display:grid;grid-template-columns:minmax(230px,2.2fr) .55fr 1.05fr .78fr 18px;align-items:center;gap:12px;padding:12px 18px}
+.ap-roadmap-head{font-size:10px;font-weight:800;color:#9b8178;text-transform:uppercase;background:#fff;border-top:1px solid #ebe1da}
+.ap-roadmap-row{width:100%;border:0;border-top:1px solid #eee5df;background:#fff;color:#423733;text-align:left;min-height:69px}
+.ap-roadmap-row:hover{background:#fdf9f6}
+.ap-roadmap-delivery{display:flex;gap:13px;align-items:center;min-width:0}
+.ap-roadmap-delivery>svg{color:#77394d}
+.ap-roadmap-delivery>span{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ap-roadmap-delivery strong{font-size:11px}
+.ap-roadmap-delivery small{font-size:9px;color:#9a8a80}
+.ap-roadmap-moment{width:max-content;border-radius:7px;background:#f6edeb;color:#774d4b;padding:7px;font-size:10px;font-weight:750}
+.ap-roadmap-row time{color:#8c786f;font-size:11px}
+.ap-admin-roadmap>.ap-pd-note{margin:12px 0 0}
+.ap-status-confirm{width:min(520px,96vw);background:#fffdfb;border:1px solid #eadfd6;border-radius:14px;padding:26px;box-shadow:0 20px 80px #1d111344;display:flex;flex-direction:column;gap:15px}
+.ap-status-confirm>div small{color:#b58c52;font-weight:800;letter-spacing:.12em}
+.ap-status-confirm h2{font-size:23px;margin:8px 0;color:#5a1e2d}
+.ap-status-confirm p{color:#89796f}
+.ap-status-confirm label{font-size:12px;display:flex;flex-direction:column;gap:9px;font-weight:700}
+.ap-status-confirm textarea{height:105px;border:1px solid #e5d8d0;border-radius:9px;padding:12px;resize:vertical}
+.ap-status-confirm footer{display:flex;justify-content:flex-end;gap:10px}
+.ap-status-confirm footer button{padding:11px 15px;border-radius:7px;border:1px solid #e7dcd4;background:#fff;color:#5a1e2d}
+.ap-status-confirm footer button:last-child{background:#5a1e2d;color:#fff}
+.ap-status-confirm footer button:disabled{opacity:.45;cursor:not-allowed}
+.ap-status-confirm>small{color:#a19085}
+@media(max-width:850px){.ap-admin-roadmap .ap-project-months{overflow:auto;grid-template-columns:repeat(8,72px)}.ap-roadmap-head,.ap-roadmap-row{min-width:760px}.ap-roadmap-list{overflow:auto}}
