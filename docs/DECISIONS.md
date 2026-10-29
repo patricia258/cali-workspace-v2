@@ -1,6 +1,6 @@
 # Registro de decisões e questões abertas
 
-Atualização: 26/10/2026. Registra estado e evidência; regras completas permanecem nos documentos donos. Data recente ou presença em código não transforma uma hipótese em aprovação de produto.
+Atualização: 28/10/2026. Registra estado e evidência; regras completas permanecem nos documentos donos. Data recente ou presença em código não transforma uma hipótese em aprovação de produto.
 
 ## Decisões de produto e escopo
 
@@ -28,15 +28,51 @@ Atualização: 26/10/2026. Registra estado e evidência; regras completas perman
 
 DEC-05 a DEC-12 registram a rodada inicial de 26/10. DEC-13 a DEC-18 incorporam a revisão de produto autorizada depois: **DEC-13 é o alvo vigente do DISC e substitui DEC-07**. Demais decisões anteriores continuam válidas. Fontes: [revisão da Patrícia](https://github.com/patricia258/cali-workspace-v2/pull/1#issuecomment-6417356971), [regras/prioridades](https://github.com/patricia258/cali-workspace-v2/pull/1#issuecomment-6417361907) e confirmações do Felipe. Nenhuma decisão documental autoriza integração, deploy, migration ou mudança de fórmula.
 
+## DEC-20 — Stack e organização de dados confirmadas em 27/10/2026
+
+Felipe escolheu TanStack Form (`@tanstack/react-form`), Query e Router, date-fns, Axios e Zod, com API organizada por módulos, hooks próprios e keys padronizadas por constantes `as const`. Versões foram selecionadas conforme compatibilidade; não foi exigida migração de React. Vite permanece o bundler; seu uso permite diferentes routers, e TanStack Router é a escolha explícita desta base.
+
+Implementação local: `src/api/modules/companies` possui schemas, keys, service, composição dos mocks de desenvolvimento e hooks de consulta; filtros usam Form/Zod e URL. Identificadores constantes e factories de tuplas substituem TS enums para query keys. Axios fica na fronteira de transporte; não duplicar Query em context. Mutation só será criada com operação de escrita real e contrato reconciliado. Versões e gates: [runbook](RUNBOOK.md); fronteiras: [arquitetura](ARCHITECTURE.md).
+
+Autorização desta rodada: sincronizar main e iniciar fase 1 localmente. Sem Supabase oficial, migrations, comunicações ou publicação.
+
+## DEC-21 — MFA obrigatório para Admin, inclusive primeiro uso
+
+Em 28/10, após explicação dos dois passos e das exceções encontradas no oficial, Felipe confirmou: “Sim, liberar Admin só após confirmar os dois passos”. Exigir cadastro e validação do autenticador antes de liberar área/poderes Admin; ausência de fator não libera, falha mantém bloqueio com retry. A decisão não altera o fluxo Cliente nem resolve automaticamente a divergência de allowlist/perfil ativo. Não há bypass por ambiente QA. Contrato em [Acesso/empresas](contracts/ACCESS_COMPANIES.md); implementação e prova no backend continuam pendentes.
+
+## DEC-22 — Ambiente local dedicado para a fase 1
+
+Definição técnica de 28/10 no escopo autorizado: Supabase CLI 2.122.0/Docker local, projeto/rede dedicados, portas de loopback, dados sintéticos, captura local de e-mail e nenhum vínculo com projeto hospedado. Configuração/preflight foram implementados em 28/10; ativação/baseline e provas locais ocorreram em 29/10, com a topologia corrigida em DEC-25. Esta escolha não autoriza executar migrations do oficial, importar dados/credenciais, publicar ou alterar outros projetos. [Definição e evidências](LOCAL_ENVIRONMENT.md).
+
+## DEC-23 — Investigar e criar registro próprio de adesão quando ausente
+
+Em 28/10, Felipe pediu investigar cadastro/primeiro acesso e, se não houver registro, criar um. Inspeção do cadastro/documentos, TermsGate, workspace-access e dos 166 SQLs da referência encontrou contratos/aditivos e aceite individual dos termos, sem registro autônomo da adesão da empresa. Criado contrato mínimo novo da V2: empresa, referência da formalização, autoria e instante do servidor; operação Admin, antes do convite, preservando DEC-08. Não foi inventada assinatura digital, upload obrigatório ou prazo de validade. Persistência/servidor foram implementados/testados localmente em 29/10 (DEC-25). Formato/comprovação documental, UI e gate de convite permanecem para o fluxo aplicável. [Investigação e alvo](contracts/ACCESS_COMPANIES.md#registro-próprio-de-adesão--dec-23).
+
+## DEC-24 — Tailwind e migração incremental de estilos
+
+Em 28/10, Felipe aprovou integrar Tailwind à branch atual e migrar o que já foi construído, evoluindo o legado junto dos commits dos fluxos e deixando a limpeza global para o fim. Implementados Tailwind 4.3.3, plugin Vite e ordenação Prettier; Button, Field e empresas migrados com remoção dos três CSS substituídos. Tokens/identidade e contratos funcionais permanecem no DS/domínio. Prefixo `tw:`, ausência de Preflight e utilities sem layer preservam a coexistência com o legado; [política e inventário](DESIGN_SYSTEM.md#inventário-da-migração-de-estilos). Não implica migrar todas as prévias nesta rodada nem encerrar a fase 1.
+
+## DEC-25 — Baseline local de adesão e ingress isolado
+
+Definição técnica de 29/10 no recorte autorizado por Felipe: implementar/testar baseline e persistência de adesão local, mantendo PR #2 atualizado. Baseline nova, sem copiar/executar migrations do oficial; papel persistido ativo/Admin, AAL2 e fator TOTP verificado são a autoridade única na operação, sem allowlist de e-mails ou bypass por fator ausente. Referência, autoria/instante e histórico são protegidos no servidor; comprovação documental, convites e aceite individual não são fabricados por essa gravação.
+
+O runtime demonstrou que rede exclusivamente internal não publica portas no host. Serviços de negócio permanecem somente nessa rede; ingress HAProxy dedicado, fixado por digest, usa segunda bridge exclusiva e publica quatro portas em 127.0.0.1, com destinos fixos/forwarding desligado. Bootstrap inicial exclui PostgREST até aplicar explicitamente o schema; migrations/seeds de negócio continuam desligados. Provider de e-mail precisa ficar habilitado para login; signup público permanece bloqueado pela configuração global e foi testado. [Topologia, provas e comandos](LOCAL_ENVIRONMENT.md), [persistência e limites](contracts/ACCESS_COMPANIES.md#persistência-local-de-adesão--2910). Não é decisão de produto nova nem autorização de produção.
+
+## DEC-26 — Códigos/termos locais e sessão preparada por contrato
+
+Continuidade autorizada por Felipe em 29/10: implementar códigos e termos versionados no ambiente isolado, preparando sessão/guardas da SPA e mantendo PR #2 atualizado. DDL ausente de códigos recebe implementação nova V2; preservar seis dígitos/10 minutos/120 segundos/cinco tentativas, com locks e uso único. Entrega é somente Mailpit; geração Auth posterior ao consumo falha fechada, sem prometer atomicidade distribuída. Não provisionar perfil/convite por e-mail nem liberar Partner nesta etapa.
+
+Termos têm conteúdo/digest imutáveis por versão, aceite corrente por ator/instante do servidor e nova confirmação a cada publicação. Só textos sintéticos foram preparados; nenhum conteúdo jurídico/prazo de guarda de produção foi inventado. Sessão vigente é requisito no servidor; corte de perfil/empresa revoga sessões e códigos pendentes sem recuperar essas credenciais ao reativar. Controller e Router recebem fonte por injeção, mas adapter/eventos/telas da SPA continuam pendentes; demo não é autenticação. [Contrato](contracts/ACCESS_COMPANIES.md#códigos-termos-e-guarda-de-sessão--2910), [operação](LOCAL_ENVIRONMENT.md).
+
 ## Propostas técnicas/de experiência
 
-Manter React/Vite; usar router; separar adaptadores/hooks; adotar cache de servidor; definir tokens, escala tipográfica, composição e padrões de interação são propostas em [Arquitetura](ARCHITECTURE.md), [Design system](DESIGN_SYSTEM.md) e [UX/UI](UX_UI.md). Dependências e versões ainda não foram implementadas.
+Manter React/Vite; usar router; separar adaptadores/hooks; adotar cache de servidor; definir tokens, escala tipográfica, composição e padrões de interação são propostas em [Arquitetura](ARCHITECTURE.md), [Design system](DESIGN_SYSTEM.md) e [UX/UI](UX_UI.md). A seleção DEC-20 e o primeiro consumidor demo estão implementados; demais padrões continuam propostos até possuir consumidor e validação.
 
 Decisões rotineiras de implementação dentro de um recorte autorizado podem ser tomadas e registradas pelo implementador. Questão aberta não exige perguntar tudo ao usuário: primeiro conferir código, contratos e evidência disponíveis; perguntar somente o que continuar bloqueando uma decisão de produto/escopo.
 
 ## Prioridade de resolução antes das fases
 
-Revisão de prioridade: 25/10/2026, por solicitação do usuário. **Nenhuma fase de implementação foi iniciada.** As 24 referências não são 24 decisões a repassar ao usuário. Há decisão de produto, informação técnica ausente e comprovação que só existe durante implementação/homologação.
+Revisão de prioridade original: 25/10/2026. Atualização de execução: fase 1 iniciada localmente em 27/10, sem integração real. As 24 referências não são 24 decisões a repassar ao usuário. Há decisão de produto, informação técnica ausente e comprovação que só existe durante implementação/homologação.
 
 ### Decisões de produto que afetam os contratos da V2
 
@@ -81,7 +117,7 @@ Percentuais, prazos e valores já encontrados no código precisam ser reconcilia
 | Ambiente isolado e comprovação operacional — OPEN-10/12 | Definir infraestrutura de teste e critérios antes da integração; prova não pode ser produzida por uma resposta de produto |
 | Paridade de módulos adicionais — OPEN-09 | Escopo geral de todos os fluxos já foi confirmado; não perguntar novamente por um piloto. Registrar somente exceção concreta se surgir |
 
-Esses itens permanecem visíveis; não foram marcados como resolvidos nem descartados. O pedido de resolver decisões antes das fases é respeitado: esta rodada altera somente documentação e faz perguntas, sem iniciar fundação, DS, rotas ou integração.
+Esses itens permanecem visíveis; não foram marcados como resolvidos nem descartados. O pedido de resolver decisões antes das fases é respeitado: as decisões de produto foram documentadas antes das fases; a fundação local agora segue DEC-20 sem antecipar integração real.
 
 ## Pendências que não devem virar suposição
 
@@ -96,7 +132,7 @@ Esses itens permanecem visíveis; não foram marcados como resolvidos nem descar
 | OPEN-07 | Contraste de tokens/pares secundários e tamanhos ainda sem QA | Pares e estados acessíveis no layout real | Antes de homologar DS; responsável design/desenvolvimento |
 | OPEN-08 | Fichas agora descrevem continuidade observada e contrato comum proposto | Validar restauração por URL, rascunhos e responsividade; ver REF-24 | Implementação/homologação do fluxo; responsável UX/funcional |
 | OPEN-09 | Fichas cobrem os 18 IDs, incluindo módulos oficiais adicionais | Decisão de migração/paridade e lacunas de servidor identificadas, não pesquisa de navegação vazia | Fase 1; responsável de produto |
-| OPEN-10 | Ambiente isolado ainda não foi selecionado/verificado | Ambiente, migrations reconciliadas, atores de teste e bloqueio de outbound | Antes da integração; responsável técnico |
+| OPEN-10 | Laboratório executado em DEC-22/25, com baseline de adesão e atores sintéticos | Bindings, negativas de IP externo/canário do host, captura local, Auth/TOTP e RLS de adesão testados; códigos/termos/estado/revogação também testados em DEC-26; faltam integração/eventos/telas da SPA e demais operações | Antes da integração; responsável técnico; [evidências](LOCAL_ENVIRONMENT.md) |
 | OPEN-11 | Fixtures atuais têm métricas/estado desconectados | Cenários sintéticos coerentes por empresa/período, inclusive falha e vazio | Antes de homologar experiência; responsável domínio/QA |
 | OPEN-12 | UX/UI foi especificada sem teste de usabilidade | Executar tarefas, registrar dificuldades e ajustar hipóteses com evidência | Homologação de recortes e sistema; responsável design/produto |
 | OPEN-13 | **Resolvida para Admin em DEC-19**; resumo diário definido pela Patrícia | Implementar/provar contrato Admin; versão Partner com empresas/horas ainda a definir na fase dele; limites técnicos em Dados | Resumo Admin integra sua entrega completa; definição Partner não bloqueia Cliente/Admin |
@@ -110,7 +146,7 @@ Referência estática fixada em `f3d3f14043a6abc38636f0340fe831e621d8b357`. Nenh
 
 | ID | Evidência/questão | O que precisa ser decidido ou comprovado | Fonte dona |
 | --- | --- | --- | --- |
-| REF-01 | Rota exige perfil ativo/role; is_admin usa allowlist/MFA, aceita ausência de fator verificado; outras RPCs/EDGE usam role/active | Qual identidade e exigência de MFA devem valer em todas as operações, inclusive com perfil desativado? | [Acesso](flows/ACCESS_ACCOUNTS.md), [matriz](PERMISSIONS.md) |
+| REF-01 | Rota exige perfil ativo/role; is_admin usa allowlist/MFA, aceita ausência de fator verificado; outras RPCs/EDGE usam role/active | MFA decidido em DEC-21: obrigatório antes de liberar Admin, com bloqueio em falha. Reconciliar identidade/allowlist/perfil ativo e provar guardas nas superfícies; não reabrir a decisão do segundo fator. | [Acesso](flows/ACCESS_ACCOUNTS.md), [matriz](PERMISSIONS.md) |
 | REF-02 | TermsGate está habilitado por versão/canal, mas erro de consulta libera UI; comentário antigo fala em desligado | Decidido em DEC-08: adesão antes do convite e aceite obrigatório por versão, bloqueando falha; falta prova técnica | [FLOW-01](flows/ACCESS_ACCOUNTS.md) |
 | REF-03 | Migration limita quatro convites ativos, docs antigos dizem acesso único; escrita Equipe ainda exige is_primary | Decidido em DEC-05: até quatro equivalentes, sem principal; reconciliar legado e preservar revogações individuais | [FLOW-02](flows/ACCESS_ACCOUNTS.md), [FLOW-08](flows/WORKSPACE_HOURS_TEAM.md) |
 | REF-04 | 29 nomes literais de RPC sem corpo CREATE FUNCTION localizado; há comentários de aplicação pelo painel | Obter definições versionadas/inspeção autorizada antes de afirmar autorização, idempotência e transições | [Fontes/lacunas](flows/SOURCES.md) |

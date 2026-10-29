@@ -12,6 +12,18 @@ Referência: [publicação 83](../BASELINE_REFERENCE_2026-10-26.md), [regras de 
 
 As tabelas abaixo continuam descrevendo fontes oficiais, inclusive a guarda antiga de principal. O alvo é o contrato de construção futuro, não mudança aplicada ao backend.
 
+## Contratos mínimos reconciliados — 28/10
+
+[Contratos de acesso/empresas](../contracts/ACCESS_COMPANIES.md) detalham payloads, projeções, códigos de erro, fontes e lacunas por operação. Schemas de fronteira existem, sem service/Auth conectado. DEC-21 fecha MFA obrigatório Admin, incluindo primeiro uso e bloqueio em falha; tabelas de evidência abaixo preservam as exceções observadas no oficial. DEC-22/25 definem laboratório executado e prova do recorte de adesão em 29/10. Não considerar contratos totalmente fechados: corpo de create_client_account, DDL de códigos, termos/sessão e predicados dos demais domínios ainda exigem implementação/reconciliação.
+
+## Persistência local verificada — 29/10
+
+No laboratório, Admin ativo com AAL2 e fator TOTP verificado registra adesão por RPC; empresa/referência vêm da request, autoria/instante do servidor. Referência vazia, autoria extra, escrita direta, Cliente A/B, Admin inativo/sem MFA e fator removido são negados; histórico não pode ser reescrito/apagado. [Contrato e limites](../contracts/ACCESS_COMPANIES.md#persistência-local-de-adesão--2910). Frontend permanece desconectado; convite, comprovação documental, aceite individual e sessão completa continuam pendentes. Tabelas abaixo preservam a evidência histórica do oficial.
+
+## Códigos/termos e estado no servidor — 29/10
+
+Edge local e banco implementam código/limites/consumo, troca por sessão Auth, versões/aceites e revogação; [contrato detalhado](../contracts/ACCESS_COMPANIES.md#códigos-termos-e-guarda-de-sessão--2910). Sessão e guardas do frontend estão preparadas por injeção; adapter/eventos/telas reais ainda pendentes. Textos de teste são sintéticos e não aprovam conteúdo jurídico. A referência histórica abaixo não descreve o runtime novo.
+
 ## FLOW-01 — Convite, código, sessão, MFA e aceite
 
 **Objetivo/atores:** pessoa autorizada acessa o workspace adequado como Cliente ou Admin. Empresa e papel vêm do perfil; não da seleção demonstrativa da V2. Adesão comercial e aceite de uso são eventos diferentes.
@@ -38,6 +50,8 @@ As tabelas abaixo continuam descrevendo fontes oficiais, inclusive a guarda anti
 **Dúvidas:** `REF-01` (MFA e identidade administrativa não uniformes), `REF-02` (gate jurídico fail-open e adesão), `REF-03` (reativação/convites). Não transformar fallback encontrado em padrão desejado da V2.
 
 ## FLOW-02 — Conta, contrato, acessos e ciclo de vida
+
+**Estado V2 em 27/10:** `/admin/clientes` consulta três empresas e acessos sintéticos por módulo/hook, com filtros e seleção na URL. Quatro acessos equivalentes aparecem na fixture inicial, sem conta principal. Isso prepara a interface/contrato local; não implementa cadastro, adesão, convite, revogação, autenticação, persistência ou limites no servidor. Demais transições abaixo descrevem referência/alvo a portar, não comportamento já entregue. Ver [arquitetura](../ARCHITECTURE.md) e [runbook](../RUNBOOK.md).
 
 **Objetivo/atores:** Admin cadastra/manutenção de conta e configura contrato/acessos; Cliente consulta contexto autorizado. Rotas `/admin/clientes` e páginas cliente relacionadas. Fontes: [cadastro UI](SOURCES.md#accounts), [contato principal](SOURCES.md#contact), [limite/status](SOURCES.md#access-limit), [triggers de encerramento](SOURCES.md#access-close), [definição ausente](SOURCES.md#account-missing), [schema/RLS](SOURCES.md#schema), [frentes](SOURCES.md#fronts).
 

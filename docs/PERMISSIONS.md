@@ -2,7 +2,7 @@
 
 Data: 25/10/2026. Oficial consultado em `f3d3f14043a6abc38636f0340fe831e621d8b357`, somente leitura. **Matriz de evidência estática, não certificação de permissões em produção.** Fontes: [índice imutável](flows/SOURCES.md). Fluxos: [fichas](flows/README.md).
 
-## Contrato alvo confirmado pelo usuário — registro em 26/10/2026
+## Contrato alvo confirmado pelo usuário — atualizado em 28/10/2026
 
 Esta seção prevalece para o desenho futuro da V2. As tabelas posteriores preservam o que foi observado no oficial; não representam implementação dessas decisões.
 
@@ -10,6 +10,7 @@ Revisão vigente: [regras de produto](PRODUCT_RULES.md), [referência funcional 
 
 | Operação/tema | Admin na V2 | Cliente na V2 | Decisão |
 | --- | --- | --- | --- |
+| Entrar e exercer poderes Admin | Sessão/perfil autorizados e segundo fator cadastrado/confirmado; ausência de fator ou falha não libera acesso | Não atribui MFA novo ao fluxo Cliente | DEC-21, 28/10; ainda sem prova operacional |
 | Acessos Cliente da empresa | Gestão de até quatro acessos equivalentes; remover um não depende de principal | Sem hierarquia de cadastro principal | DEC-05 |
 | Cadastrar/importar/arquivar pessoas e confirmar revisão mensal | Mantém operações administrativas autorizadas | Todos os acessos Cliente da própria empresa podem manter Equipe | DEC-05 |
 | Informar/consultar remuneração, revisão salarial, gênero e filhos | Informa e consulta no escopo administrativo | Informa e consulta somente da própria empresa | DEC-09 |
@@ -26,7 +27,7 @@ Revisão vigente: [regras de produto](PRODUCT_RULES.md), [referência funcional 
 | Receber resumo diário das 19h | Admin ativo com e-mail; ações elegíveis/horas por empresa | Não recebe; staff também não; versão Partner posterior, sem público/projeção definidos ainda | DEC-19 |
 | Ativar acesso Cliente | Adesão registrada antes de emitir convite | Aceite de uso no primeiro acesso e a cada nova versão; sem entrada se verificação falhar | DEC-08 |
 
-Decisões anteriores continuam vigentes, exceto DEC-07 substituída por DEC-13. Fonte: [registro](DECISIONS.md). Resumo diário Admin segue DEC-19/RESUMO-01: Cliente e staff não recebem; conteúdo Partner ainda será definido na fase dele. Não alterar schema/policy nesta etapa. Histórico de aprovação/ciência não é atribuído automaticamente ao conteúdo corrigido; pessoa focal não cria privilégio principal. Finalidades/guarda e informação de acesso estão em [Dados pessoais](DATA_PRIVACY.md).
+Decisões anteriores continuam vigentes, exceto DEC-07 substituída por DEC-13. Fonte: [registro](DECISIONS.md). Resumo diário Admin segue DEC-19/RESUMO-01: Cliente e staff não recebem; conteúdo Partner ainda será definido na fase dele. Esta matriz estática não autoriza alteração de produção; o recorte local de 29/10 abaixo registra somente a implementação autorizada/testada. Histórico de aprovação/ciência não é atribuído automaticamente ao conteúdo corrigido; pessoa focal não cria privilégio principal. Finalidades/guarda e informação de acesso estão em [Dados pessoais](DATA_PRIVACY.md).
 
 ## Legenda e limites
 
@@ -47,6 +48,14 @@ Cada célula vale para a **operação e superfície indicadas**. Permitir SELECT
 5. **Cliente principal:** manutenção de pessoas/revisão mensal exige `role=client`, active, is_primary e própria empresa; adicional não herda essa escrita. Até quatro convites ativos são previstos em migration posterior, não quatro acessos com permissões idênticas em todas as operações. [Limite](flows/SOURCES.md#access-limit), [Equipe](flows/SOURCES.md#team-save).
 
 Não transportar divergências como nova política aprovada da V2. Ver [dúvidas REF](DECISIONS.md).
+
+## Recorte local implementado — 29/10
+
+Adesão: Admin de perfil persistido ativo + JWT AAL2 + fator TOTP verificado pode registrar/ler; Cliente A/B, Partner, perfil ausente/inativo, anônimo e service role não registram. Cliente não recebe evidências; INSERT direto/UPDATE/DELETE são negados. SQL com rollback e API/Auth local verificaram esse recorte; [contrato](contracts/ACCESS_COMPANIES.md#persistência-local-de-adesão--2910). Não é prova de permissão dos demais domínios, convites, termos ou do frontend. Leitura do próprio perfil não libera entrada no workspace.
+
+## Códigos/termos e sessão local — 29/10
+
+RPCs de issue/delivery/consume são exclusivas de serviço; papéis do navegador não consultam hashes privados. Conteúdo legal corrente pode ser consultado antes do login; aceite exige sessão/perfil elegíveis e, para Admin, MFA concluído, sem autoria/instante informados pelo cliente. Negócio exige aceite corrente e sessão vigente. Cliente consulta somente própria empresa active/paused com adesão; blocked/closed/archived cortam sessões/códigos. Logout/inativação também bloqueiam JWT antigo. [Contrato e limites](contracts/ACCESS_COMPANIES.md#códigos-termos-e-guarda-de-sessão--2910). Isso não comprova os demais domínios nem sessão completa na SPA; tabelas seguintes continuam estáticas do oficial.
 
 ## Acesso, conta e proposta — FLOW-01/02/03
 

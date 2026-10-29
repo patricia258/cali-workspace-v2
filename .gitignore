@@ -4,3 +4,11 @@ dist
 .env.*
 !.env.example
 .vercel
+
+# Artefatos locais de compilação e QA
+*.tsbuildinfo
+coverage/
+.playwright-cli/
+output/playwright/
+supabase/.temp/
+supabase/.branches/

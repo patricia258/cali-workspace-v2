@@ -1,12 +1,12 @@
 # Plano de padronização por fluxos completos
 
-Atualização: 26/10/2026. **Planejamento revisado; nenhuma implementação iniciada.** V2 é a base; oficial somente leitura. Referência: aplicativo funcionando em 26/10, testado pela Patrícia, [publicação 83](BASELINE_REFERENCE_2026-10-26.md). [Regras de produto](PRODUCT_RULES.md) e [decisões](DECISIONS.md) definem o alvo e as diferenças aprovadas.
+Atualização: 29/10/2026. **Fase 1 em andamento localmente; demais entregas planejadas.** V2 é a base; oficial somente leitura. Referência: aplicativo funcionando em 26/10, testado pela Patrícia, [publicação 83](BASELINE_REFERENCE_2026-10-26.md). [Regras de produto](PRODUCT_RULES.md) e [decisões](DECISIONS.md) definem o alvo e as diferenças aprovadas.
 
 Objetivo: padronizar todos os fluxos Cliente/Admin sem passar várias fases construindo camadas antes da primeira jornada utilizável. Cada entrega fecha uma tarefa com interface, dados, regra, autorização, histórico, falhas e comunicação quando aplicável. “Fluxo completo” é unidade de construção; não cria fluxo novo nem significa que toda tela dispara e-mail. Chat não gera e-mail. Produção, migrations e canais externos exigem escopo próprio.
 
 ## Estado e cobertura
 
-Já existem levantamento, 18 fichas, matriz estática, DS/UX/arquitetura propostos e decisões. Não repetir inventário como se estivesse vazio. Código segue demonstrativo; somente typecheck/build existem como verificações locais. Router, SDK, DS compartilhado, lint, testes e CI ainda não foram implantados.
+Já existem levantamento, 18 fichas, matriz estática, DS/UX/arquitetura propostos e decisões. Não repetir inventário como se estivesse vazio. Código segue demonstrativo. Router, Query/Form, API modular de empresas, tokens e Button/Field existem; lint, testes, formatação, links e build compõem `npm run verify`. Workflow definido ainda não executado no GitHub. SDK e sessão no frontend permanecem pendentes; RLS/persistência de adesão foram testados no laboratório, sem cobrir os demais domínios. Bibliotecas foram escolhidas pelo usuário em DEC-20.
 
 O SHA `f3d3f14043a6abc38636f0340fe831e621d8b357` das fontes já corresponde à publicação 83. Os links continuam válidos; código/migrations não comprovam configuração ou aplicação no banco ativo. As 29 chamadas sem corpo localizado permanecem lacunas técnicas por operação, não motivo para inventar contrato.
 
@@ -17,7 +17,7 @@ Todos os IDs FLOW-01 a FLOW-18 permanecem rastreados. A rotina Admin/Cliente vem
 | Fase | Entrada | Entrega/saída | Estado |
 | --- | --- | --- | --- |
 | 0 — Base documental e contrato de produto | Levantamento e revisão Patrícia/Felipe | Fontes, regras, decisões e cobertura rastreadas; sem comprovação operacional | Entregue documentalmente; resumo Admin definido em DEC-19 |
-| 1 — Fundação mínima para o primeiro fluxo | 0 e autorização futura de implementação | Execução reproduzível, isolamento de teste, acesso e shell/DS estritamente necessários à primeira entrega | Planejada |
+| 1 — Fundação mínima para o primeiro fluxo | 0 e execução local autorizada em 27/10 | Execução reproduzível, isolamento de teste, acesso e shell/DS estritamente necessários à primeira entrega | Em andamento; base demo local, sem sessão real |
 | 2 — Rotina Admin/Cliente | 1 e contratos de cada entrega | Empresas/acessos, Equipe e dados mensais, cada um utilizável de ponta a ponta | Planejada |
 | 3 — Perfil comportamental DISC | Acesso/empresa e peças compartilhadas necessárias de 1/2 | Convite/resposta, avaliador interno e gestão/aprovação/entrega | Planejada |
 | 4 — Demais fluxos Cliente/Admin | Contratos e vínculos necessários por tarefa | Projetos, horas, agenda, ocorrências, documentos, relatórios, avisos e módulos adicionais | Planejada |
@@ -29,7 +29,7 @@ Não há estimativas em dias nem responsáveis individuais inventados. Nomear re
 
 ## Fase 1 — Fundação mínima para a primeira entrega
 
-**Dependência:** fase 0 e autorização de execução. A prioridade é viabilizar 2A, não criar todas as pastas, componentes ou integrações antes de entregar uso.
+**Dependência:** fase 0; execução local autorizada pelo Felipe em 27/10, sem conexão ao Supabase oficial nem publicação. A prioridade é viabilizar 2A, não criar todas as pastas, componentes ou integrações antes de entregar uso.
 
 **Trabalho necessário:**
 
@@ -39,6 +39,68 @@ Não há estimativas em dias nem responsáveis individuais inventados. Nomear re
 - Reconciliar somente os contratos de acesso e empresa necessários ao início. Preparar contas/adesões sintéticas para testar sessão sem depender do cadastro completo de 2A.
 - Implementar bootstrap, shell/layout e rotas mínimas; identidade e contexto isolados; tokens e primitivas com consumidores reais. DS/rotas/hooks/cache crescem com as entregas seguintes.
 - Adesão antes do convite; termos obrigatórios no primeiro acesso/nova versão; falha de comprovação bloqueia. Integrar informação de privacidade e versionamento conforme [Dados pessoais](DATA_PRIVACY.md).
+
+**Progresso local de 27/10:** main sincronizada em `c9baea7`; runtime/lockfile e gates definidos; navegação Cliente/Admin por URL preservando composições legadas; empresas com filtros/seleção na URL, hooks Query, formulário Form/Zod e adapter Axios em memória. Tokens e duas primitivas têm consumidor real. Isso prepara 2A, sem declarar cadastro, convite, revogação ou limite de acessos comprovados no servidor.
+
+### Acompanhamento da fase 1 — pacote para revisão
+
+Esta lista registra execução e evidência. O [PR #2](https://github.com/patricia258/cali-workspace-v2/pull/2) acompanha o mesmo recorte em rascunho; atualizar sua descrição a cada lote de commits junto das fontes canônicas. Fase 1 continua em andamento até cumprir os gates de acesso real abaixo.
+
+**Concluído localmente:**
+
+- [x] Sincronizar a base documental da main `c9baea7` e trabalhar na branch `codex/fase-1-base`.
+- [x] Fixar runtime, dependências e lockfile; comprovar instalação limpa sem scripts de dependências.
+- [x] Configurar formatação, lint, typecheck, testes, checagem documental e build em `npm run verify`.
+- [x] Implantar bootstrap, Router/Query providers, URLs Cliente/Admin e retorno para erro/rota inexistente; shells legados permanecem ponte de migração.
+- [x] Preparar módulo de empresas com schemas Zod, services, hooks Query, keys `as const`, filtros/seleção na URL e dados em memória. Isso não entrega cadastro/convite/revogação reais.
+- [x] Implantar tokens, Button/Field e tipo compartilhado de variantes, com strings tipadas no JSX.
+- [x] Separar mocks da aplicação de fixtures/adapters exclusivos dos testes; proteger fronteiras com lint.
+- [x] Documentar tipos, regras de lint/exceções, decisões de stack, operação e rollback.
+- [x] Validar o consumidor demonstrativo em 1440/1280/1024/390 px e teclado; verificação inicial passou com 50 testes; o recorte de 28/10 acrescenta contratos/precondições do ambiente, sem prova de Auth/RLS.
+
+**Avanço de 28/10 — contratos e definição do ambiente:**
+
+- [x] Reconciliar superfícies mínimas e versionar schemas de request/response e records planejados de perfil/aceite/empresa/convite; [contrato detalhado](contracts/ACCESS_COMPANIES.md).
+- [x] Investigar cadastro/primeiro acesso e criar contrato mínimo próprio de adesão, sem confundir com aceite de termos — DEC-23; persistência concluída no laboratório em 29/10, comprovação/fluxo ainda pendentes.
+- [x] Fechar regra de MFA com Felipe: Admin só entra após os dois passos, inclusive primeiro uso, com bloqueio em falha — DEC-21.
+- [x] Definir Supabase local dedicado, CLI/portas/rede e configuração versionada com migrations/seeds desligados — DEC-22; [ambiente](LOCAL_ENVIRONMENT.md).
+- [x] Implementar checagem estática da configuração e preflight somente de leitura. Docker/portas conferidos; preflight não passou porque CLI e rede dedicada ainda não existem.
+
+**Avanço de 28/10 — padronização de estilos (DEC-24):**
+
+- [x] Integrar Tailwind/Vite/Prettier, mapear tokens CALI e migrar Button, Field e empresas; remover os três CSS substituídos.
+- [x] Registrar coexistência sem Preflight, prefixo `tw:` e inventário dos oito CSS legados no [DS](DESIGN_SYSTEM.md#inventário-da-migração-de-estilos).
+- [ ] Migrar os demais consumidores junto dos respectivos fluxos; retirar regras/imports substituídos a cada recorte e concluir limpeza global após todos migrarem. Trabalho transversal das fases, sem bloquear a primeira entrega por catálogo visual completo.
+
+**Avanço de 29/10 — baseline e adesão no laboratório (DEC-25):**
+
+- [x] Instalar CLI fixado temporariamente, conferir checksum, criar redes exclusivas e executar bootstrap revisado, sem conexão remota.
+- [x] Preservar serviços de negócio em rede internal; publicar somente proxy TCP dedicado em loopback, com destinos fixos e restrições verificadas.
+- [x] Aplicar baseline nova de empresa/perfil/adesão, com journal/digest, autoria/instante do servidor, histórico imutável, RLS e autoridade Admin unificada no recorte.
+- [x] Testar SQL permitidos/negados e API com Auth/TOTP reais: 30 verificações; provar captura SMTP local e negativas de IP externo/canário do host nos cinco serviços.
+- [ ] Integrar esses contratos à sessão/guardas/frontend e completar comprovação da referência/gate de convite no fluxo respectivo. Persistência local não encerra a jornada.
+
+**Avanço de 29/10 — códigos/termos e preparação de sessão (DEC-26):**
+
+- [x] Implementar DDL novo V2, Edge local, captura Mailpit, locks/uso único/limites e troca de token pelo Auth; sem provisioning por convite ou envio externo.
+- [x] Implementar versões/conteúdo/digest imutáveis, aceite corrente idempotente por servidor e bloqueio por ausência/versão antiga. Testes usam textos sintéticos; conteúdo CALI ainda não foi aprovado/publicado.
+- [x] Implementar estado de sessão/empresa e corte no servidor; inativação/bloqueio/encerramento/arquivamento revogam sessões/códigos sem reativação automática das credenciais antigas.
+- [x] Preparar controller de sessão, contrato validado, cache/cancelamento/gerações, beforeLoad Cliente/Admin e invalidação de rota no logout, com fonte injetada nos testes.
+- [ ] Conectar fonte/eventos/refresh Auth e telas de código/MFA/termos à SPA; bootstrap permanece demo, sem SDK/URL real.
+
+**Falta para fechar a fase 1:**
+
+- [ ] Completar lacunas de contrato e baseline por operação: autorização dos próximos contratos e integração da SPA; DDL novo de códigos/termos já implementado/testado localmente; persistência da adesão e predicado unificado já testados no recorte local, sem equivaler à cobertura de todos os domínios; create_client_account segue ausente para 2A, sem impedir preparação sintética. MFA decidido em DEC-21 e testado no servidor da adesão; UI/sessão e demais superfícies pendentes. TEC-01/02 não foram declarados resolvidos globalmente.
+- [ ] Ampliar os consumidores reais do laboratório já testado para código/termos/estado/revogação: conectar sessão e UI da SPA. CLI/rede/bindings/negativas de rede/captura e RLS de adesão foram testados em 29/10; OPEN-10 continua parcial para o fluxo completo. Nenhuma conexão ao oficial está autorizada.
+- [ ] Conectar autenticação/sessão/eventos e login/callback no frontend; controller/guardas já preparados por injeção. Integrar MFA e retorno seguro sem tratar mock-admin como identidade.
+- [ ] Completar comprovação/gate de adesão antes do convite e apresentar/validar conteúdo de uso/privacidade no frontend; aceite obrigatório por versão já testado no servidor. Usar contas/adesões preparadas para teste, sem antecipar o cadastro completo da fase 2A.
+- [ ] Provar isolamento no servidor para Cliente A/B/Admin, perfil inativo, empresa bloqueada, expiração/revogação, logout e cancelamento/limpeza de cache/contexto.
+- [ ] Validar URL direta/retorno após login e teclado/mobile dos estados de acesso reais; fixtures não encerram esse aceite.
+- [ ] Executar/revisar CI no GitHub para a revisão enviada e concluir a revisão técnica do recorte; workflow definido não é execução comprovada.
+
+Cadastro/contrato, convite e manutenção dos quatro acessos equivalentes de ponta a ponta são a entrega 2A. O DS e as demais extrações crescem junto dos fluxos; não são um catálogo completo a terminar antes de 2A. Fontes de evidência: [arquitetura](ARCHITECTURE.md), [runbook](RUNBOOK.md), [changelog](CHANGELOG.md) e [ficha de acesso/contas](flows/ACCESS_ACCOUNTS.md).
+
+**Próximo passo técnico:** conectar adapter/eventos/refresh de sessão e telas de código/MFA/termos ao laboratório já testado; completar comprovação documental e gate de convite no recorte de empresas/acessos. OPEN-10 continua parcial para jornada integrada; sessão/MFA/termos no navegador e RLS dos demais domínios continuam pendentes. Estado/expiração/revogação/logout e RLS de empresa foram exercitados no servidor local. Não tratar demonstração Admin como autenticação.
 
 **Bloqueios:** TEC-01 para contrato de acesso ausente; TEC-02 para sessão, papel, empresa, MFA e superfícies reais; OPEN-10 para ambiente. Corpos ausentes de agenda ou relatórios não bloqueiam o primeiro fluxo se independentes.
 
@@ -164,4 +226,4 @@ Comandos reais/resultados; QA, evidências e aceite de produto:
 Documentação canônica, compatibilidade, rollback e próxima ação:
 ```
 
-Registrar execução no [changelog](CHANGELOG.md), conforme [Política de mudança](CHANGE_POLICY.md). Distinguir planejado, bloqueado, implementado e validado. Todos os estados de implementação permanecem planejados nesta revisão.
+Registrar execução no [changelog](CHANGELOG.md), conforme [Política de mudança](CHANGE_POLICY.md). Distinguir planejado, bloqueado, implementado e validado. Fase 1 tem execução local parcial; as entregas de produto das fases 2–7 permanecem planejadas. Não encerrar fase 1 com base apenas em mocks, lint e build.
