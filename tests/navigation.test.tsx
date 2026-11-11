@@ -97,7 +97,7 @@ describe('navegação e formulário de empresas', () => {
   });
 
   it('abre acesso por URL direta sem visitar lista antes', async () => {
-    await openApp(`/admin/clientes?companyId=${mockCompanyIds.Aurora}`);
+    await openApp(`/admin/clientes?companyId=${mockCompanyIds.Aurora}&tab=Acessos`);
     expect(
       await screen.findByRole('heading', { name: 'Acessos · Aurora Tecnologia' }),
     ).toBeTruthy();
@@ -160,7 +160,7 @@ describe('navegação e formulário de empresas', () => {
     act(() => {
       void router.navigate({ to: '/admin' });
     });
-    expect(await screen.findByRole('heading', { name: /Visão executiva/ })).toBeTruthy();
+    expect(await screen.findByRole('heading', { name: /Visão geral/ })).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Carteira de empresas' })).toBeTruthy();
     await act(async () => {
       await router.history.push('/rota-inexistente');

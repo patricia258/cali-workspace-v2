@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { MapaJourneys } from './components/MapaJourneys';
 import { MapaReview } from './components/MapaReview';
 import { MapaReportSummary } from './components/MapaReportSummary';
+import { MapaPartnerAssignment } from './components/MapaPartnerAssignment';
+import { MapaPartnerOpinionQueue } from './components/MapaPartnerOpinionQueue';
 import { skipToken, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getRouteApi, useRouteContext } from '@tanstack/react-router';
 import { useProjectWorkspaceScope } from '../../../components/workspace/useProjectWorkspaceScope';
@@ -11,10 +13,10 @@ import { CompanySelect } from '../../../components/workspace/WorkspaceCompanySel
 import { Pages } from '../../../components/workspace/WorkspacePages';
 import { type Props } from '../../../components/workspace/workspace-presentation';
 
-const adminMapa = getRouteApi('/admin/mapa-people');
+const adminMapa = getRouteApi('/admin/mapa-de-people');
 
 export function AdminMapaPage() {
-  const { adminRead, domainOperations } = useRouteContext({ from: '__root__' });
+  const { adminRead, domainOperations, adminMapaOpinions } = useRouteContext({ from: '__root__' });
   const search = adminMapa.useSearch();
   const navigate = adminMapa.useNavigate();
   const { companyId, actor, admin } = useProjectWorkspaceScope(search);
@@ -65,32 +67,40 @@ export function AdminMapaPage() {
       )}
       {companyId && view === 'responses' && result.data && (
         <>
+          <MapaPartnerOpinionQueue company={companyId} service={adminMapaOpinions} />
           {result.data.entries.length === 0 && (
             <FeedbackState kind="empty">Nenhum registro vinculado nesta página.</FeedbackState>
           )}
-          {result.data.entries.map((entry) => (
-            <div key={entry.id} className="tw:grid tw:gap-2">
-              <MapaReview
-                entry={entry}
-                company={companyId}
-                operations={domainOperations}
-                saved={async () => {
-                  await Promise.all([
-                    cache.invalidateQueries({ queryKey: key }),
-                    cache.invalidateQueries({
-                      queryKey: ['phase4-mapa-report', actor, companyId, entry.id],
-                    }),
-                  ]);
-                }}
-              />
-              <MapaReportSummary
-                record={entry.id}
-                company={companyId}
-                actor={actor}
-                service={adminRead}
-              />
-            </div>
-          ))}
+          <ul className="tw:m-0 tw:grid tw:list-none tw:p-0">
+            {result.data.entries.map((entry) => (
+              <li key={entry.id} className="tw:border-line tw:grid tw:gap-2 tw:border-b tw:py-4">
+                <MapaReview
+                  entry={entry}
+                  company={companyId}
+                  operations={domainOperations}
+                  saved={async () => {
+                    await Promise.all([
+                      cache.invalidateQueries({ queryKey: key }),
+                      cache.invalidateQueries({
+                        queryKey: ['phase4-mapa-report', actor, companyId, entry.id],
+                      }),
+                    ]);
+                  }}
+                />
+                <MapaPartnerAssignment
+                  company={companyId}
+                  entry={entry}
+                  service={adminMapaOpinions}
+                />
+                <MapaReportSummary
+                  record={entry.id}
+                  company={companyId}
+                  actor={actor}
+                  service={adminRead}
+                />
+              </li>
+            ))}
+          </ul>
           <Pages total={result.data.total} search={search} update={update} />
         </>
       )}

@@ -11,11 +11,13 @@ export const workspaceSearch = z.object({
   report: z.uuid().optional().catch(undefined),
   reportView: z.enum(['list']).optional().catch(undefined),
   record: z.uuid().optional().catch(undefined),
+  aviso: z.uuid().optional().catch(undefined),
   delivery: z.uuid().optional().catch(undefined),
   task: z.uuid().optional().catch(undefined),
   section: sectionSchema.default('deliverables').catch('deliverables'),
   page: z.coerce.number().int().min(1).max(10000).default(1).catch(1),
   month: monthSchema.optional().catch(undefined),
+  satisfactionPeriod: z.literal('all').optional().catch(undefined),
 });
 export type WorkspaceSearch = z.infer<typeof workspaceSearch>;
 

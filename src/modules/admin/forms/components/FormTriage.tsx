@@ -1,3 +1,5 @@
+import { Checkbox } from '../../../../components/ds/checkbox/Checkbox';
+import { useRouteContext } from '@tanstack/react-router';
 import { FeedbackMessage } from '../../../../components/ds/feedback/FeedbackMessage';
 import { Input, Select } from '../../../../components/ds/field/Controls';
 import { PdfDownload } from '../../../../components/documents/PdfDownload';
@@ -8,6 +10,7 @@ import { Button } from '../../../../components/ds/button/Button';
 import { Field } from '../../../../components/ds/field/Field';
 import { formatServerInstant } from '../../../../lib/dates';
 import { ActionForm } from '../../../../components/workspace/ActionForm';
+import { Paperclip } from 'lucide-react';
 
 export function FormTriage({
   company,
@@ -20,6 +23,7 @@ export function FormTriage({
   form: string;
   operations: DomainOperations;
 }) {
+  const { formLifecycle } = useRouteContext({ from: '__root__' });
   const [page, setPage] = useState(1);
   const cache = useQueryClient();
   const key = ['phase4-form-triage', actor, company, form];
@@ -62,6 +66,25 @@ export function FormTriage({
                     {response.respondent_name || 'Resposta sem nome'} ·{' '}
                     {formatServerInstant(response.submitted_at)}
                   </p>
+                  {response.answers && (
+                    <details>
+                      <summary>Respostas enviadas</summary>
+                      {response.answers.length ? (
+                        <dl className="tw:grid tw:gap-2">
+                          {response.answers.map((answer) => (
+                            <div key={`${response.id}-${answer.questionId}`}>
+                              <dt className="tw:font-semibold">{answer.question}</dt>
+                              <dd className="tw:m-0 tw:whitespace-pre-wrap">
+                                {answer.answer || 'Sem resposta'}
+                              </dd>
+                            </div>
+                          ))}
+                        </dl>
+                      ) : (
+                        <p>Esta resposta não contém respostas textuais.</p>
+                      )}
+                    </details>
+                  )}
                   <Field id={prefix + 'stage'} label="Etapa">
                     <Select id={prefix + 'stage'} name="stage" defaultValue={response.stage ?? ''}>
                       <option value="">Sem etapa</option>
@@ -81,6 +104,31 @@ export function FormTriage({
                 </>
               )}
             </ActionForm>
+            {formLifecycle && (
+              <ActionForm
+                label="Mover resposta para lixeira"
+                submit={async () => {
+                  const result = await formLifecycle.removeResponse(company, form, response.id);
+                  await Promise.all([
+                    cache.invalidateQueries({ queryKey: key }),
+                    cache.invalidateQueries({ queryKey: ['phase4-forms', actor, company] }),
+                    cache.invalidateQueries({ queryKey: ['form-trash', actor, company] }),
+                  ]);
+                  return result;
+                }}
+              >
+                {(prefix) => (
+                  <Checkbox id={prefix + 'trash'} required>
+                    Confirmo que quero mover esta resposta para a lixeira.
+                  </Checkbox>
+                )}
+              </ActionForm>
+            )}
+            {response.attachmentsAvailable && (
+              <ResponseAttachments
+                load={() => operations.formResponseAttachments(company, form, response.id)}
+              />
+            )}
             {response.pdfAvailable && (
               <PdfDownload
                 download={(signal) =>
@@ -106,5 +154,56 @@ export function FormTriage({
         </div>
       )}
     </section>
+  );
+}
+
+function ResponseAttachments({
+  load,
+}: {
+  load: () => Promise<Array<{ id: string; fileName: string; url: string }>>;
+}) {
+  const [files, setFiles] = useState<Array<{ id: string; fileName: string; url: string }> | null>(
+    null,
+  );
+  const [error, setError] = useState(false);
+  const [busy, setBusy] = useState(false);
+  return (
+    <div className="tw:grid tw:gap-2">
+      {files ? (
+        files.length ? (
+          files.map((file) => (
+            <a key={file.id} href={file.url} target="_blank" rel="noopener noreferrer">
+              <Paperclip size={14} /> {file.fileName}
+            </a>
+          ))
+        ) : (
+          <p>Nenhum anexo disponível.</p>
+        )
+      ) : (
+        <Button
+          variant="secondary"
+          disabled={busy}
+          onClick={async () => {
+            setBusy(true);
+            setError(false);
+            try {
+              setFiles(await load());
+            } catch {
+              setError(true);
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          <Paperclip size={14} /> {busy ? 'Preparando anexos…' : 'Ver anexos'}
+        </Button>
+      )}
+      {error && <FeedbackMessage tone="error">Anexos indisponíveis.</FeedbackMessage>}
+      {files && (
+        <Button variant="secondary" onClick={() => setFiles(null)}>
+          Fechar anexos
+        </Button>
+      )}
+    </div>
   );
 }

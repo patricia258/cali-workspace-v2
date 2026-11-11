@@ -1,5 +1,5 @@
--- Fase 5. Horas manuais entram em fila privada e só são lançadas após decisão Admin.
-create table cali_session_guard.phase5_partner_hours (
+-- Fase 5. Horas manuais e de cronômetro usam a mesma fila privada.
+create table if not exists cali_session_guard.phase5_partner_hours (
   id uuid primary key,
   company_id uuid not null,
   actor_id uuid not null,
@@ -18,7 +18,35 @@ create table cali_session_guard.phase5_partner_hours (
 alter table cali_session_guard.phase5_partner_hours enable row level security;
 revoke all on cali_session_guard.phase5_partner_hours from public,anon,authenticated,service_role;
 
-create function cali_workspace.v2_submit_partner_pilot_hours(
+alter table cali_session_guard.phase5_partner_hours add column if not exists timer_id uuid;
+alter table cali_session_guard.phase5_partner_hours add column if not exists adjustment_request_id uuid;
+alter table cali_session_guard.phase5_partner_hours add column if not exists adjustment_signature text;
+create unique index if not exists phase5_partner_hours_timer on cali_session_guard.phase5_partner_hours(timer_id);
+
+create or replace function cali_session_guard.enqueue_phase5_partner_timer(
+  timer cali_workspace.work_timers, invitation uuid, ended timestamptz,
+  duration integer, justification text
+)
+returns uuid language plpgsql set search_path='' as $$
+declare submission_id uuid;
+begin
+  insert into cali_session_guard.phase5_partner_hours
+    (id,company_id,actor_id,invite_id,day,minutes,description,justification,timer_id)
+  values(gen_random_uuid(),timer.company_id,timer.user_id,invitation,
+    (ended at time zone 'America/Sao_Paulo')::date,duration,timer.description,justification,timer.id)
+  on conflict(timer_id) do nothing returning id into submission_id;
+  if submission_id is null then
+    select id into strict submission_id from cali_session_guard.phase5_partner_hours
+    where timer_id=timer.id;
+  end if;
+  return submission_id;
+end;
+$$;
+revoke all on function cali_session_guard.enqueue_phase5_partner_timer(
+  cali_workspace.work_timers,uuid,timestamptz,integer,text
+) from public,anon,authenticated,service_role;
+
+create or replace function cali_workspace.v2_submit_partner_pilot_hours(
   p_company uuid,p_request uuid,p_day date,p_minutes integer,p_description text,p_justification text
 )
 returns uuid language plpgsql security definer set search_path='' as $$
@@ -42,7 +70,7 @@ begin
   values(p_request,p_company,auth.uid(),invitation.id,p_day,p_minutes,btrim(p_description),btrim(p_justification))
   on conflict(id) do nothing;
   select * into strict existing from cali_session_guard.phase5_partner_hours where id=p_request;
-  if row(existing.company_id,existing.actor_id,existing.invite_id,existing.day,existing.minutes,
+  if existing.timer_id is not null or row(existing.company_id,existing.actor_id,existing.invite_id,existing.day,existing.minutes,
     existing.description,existing.justification) is distinct from
     row(p_company,auth.uid(),invitation.id,p_day,p_minutes,btrim(p_description),btrim(p_justification)) then
     raise exception using errcode='40001',message='A solicitação já foi usada.';
@@ -51,7 +79,64 @@ begin
 end;
 $$;
 
-create function cali_workspace.v2_list_partner_pilot_hour_requests(p_company uuid,p_admin boolean,p_page integer)
+-- Permite ao Partner corrigir somente o trecho que o fechamento automático enfileirou.
+create or replace function cali_workspace.v2_adjust_partner_pilot_hours(
+  p_company uuid,p_request uuid,p_submission uuid,p_day date,p_minutes integer,p_description text,p_justification text
+)
+returns uuid language plpgsql security definer set search_path='' as $$
+declare
+  access jsonb:=cali_workspace.v2_read_partner_pilot();
+  invitation cali_session_guard.phase4_staff_invites:=cali_session_guard.phase5_partner_invite();
+  submission cali_session_guard.phase5_partner_hours;
+  signature text;
+begin
+  if access->>'status' is distinct from 'ready' or access->>'company' is distinct from p_company::text
+    or not coalesce((access->'modules') ? 'hours',false) or invitation.id is null then
+    raise exception using errcode='42501',message='Horas indisponíveis.';
+  end if;
+  if p_request is null or p_day is null or p_day>(now() at time zone 'America/Sao_Paulo')::date
+    or p_minutes is null or p_minutes not between 1 and 1440
+    or coalesce(length(btrim(p_description)),0) not between 3 and 1000
+    or coalesce(length(btrim(p_justification)),0) not between 3 and 1000 then
+    raise exception using errcode='22023',message='Confira data, duração, descrição e justificativa.';
+  end if;
+  signature:=encode(sha256(convert_to(jsonb_build_array(
+    'partner-recovered-hours',p_company,p_submission,p_day,p_minutes,btrim(p_description),btrim(p_justification)
+  )::text,'UTF8')),'hex');
+  select * into submission from cali_session_guard.phase5_partner_hours h
+    where h.id=p_submission and h.company_id=p_company and h.actor_id=auth.uid()
+      and h.invite_id=invitation.id and h.timer_id is not null for update;
+  if not found or submission.status<>'pending' or not exists(
+    select 1 from cali_workspace.activity_log l
+    where l.entity_type='work_timer' and l.entity_id=submission.timer_id
+      and l.event_type='partner_pilot_timer_queued'
+      and l.metadata->>'closing_event'='timer_auto_paused_inactivity'
+  ) or not exists(
+    select 1 from cali_workspace.work_timers t where t.id=submission.timer_id
+      and t.company_id=p_company and t.user_id=auth.uid() and t.status='stopped'
+  ) then
+    raise exception using errcode='42501',message='Este trecho não permite ajuste.';
+  end if;
+  if submission.adjustment_request_id=p_request then
+    if submission.adjustment_signature is distinct from signature then
+      raise exception using errcode='40001',message='A solicitação já foi usada.';
+    end if;
+    return submission.id;
+  end if;
+  update cali_session_guard.phase5_partner_hours set day=p_day,minutes=p_minutes,
+    description=btrim(p_description),justification=btrim(p_justification),
+    adjustment_request_id=p_request,adjustment_signature=signature
+    where id=submission.id;
+  update cali_workspace.work_timers set minutes=p_minutes where id=submission.timer_id
+    and company_id=p_company and user_id=auth.uid() and status='stopped';
+  insert into cali_workspace.activity_log(company_id,actor_user_id,event_type,entity_type,entity_id,metadata)
+    values(p_company,auth.uid(),'partner_pilot_hours_adjusted','staff_hour_submission',submission.id,
+      jsonb_build_object('timer_id',submission.timer_id,'minutes',p_minutes,'day',p_day));
+  return submission.id;
+end;
+$$;
+
+create or replace function cali_workspace.v2_list_partner_pilot_hour_requests(p_company uuid,p_admin boolean,p_page integer)
 returns jsonb language plpgsql stable security definer set search_path='' as $$
 declare
   access jsonb;
@@ -73,7 +158,12 @@ begin
   return (
     with matched as (
       select h.id,h.day,h.minutes,h.description,h.justification,h.status,h.decision_note,h.created_at,
-        case when p_admin then m.full_name end as member_name
+        case when p_admin then m.full_name end as member_name,
+        (not p_admin and h.timer_id is not null and exists(
+          select 1 from cali_workspace.activity_log l where l.entity_type='work_timer'
+            and l.entity_id=h.timer_id and l.event_type='partner_pilot_timer_queued'
+            and l.metadata->>'closing_event'='timer_auto_paused_inactivity'
+        )) as recoverable
       from cali_session_guard.phase5_partner_hours h
       join cali_session_guard.phase4_staff_invites i on i.id=h.invite_id
       left join cali_workspace.staff_members m on m.id=i.member_id
@@ -87,12 +177,13 @@ begin
 end;
 $$;
 
-create function cali_workspace.v2_decide_partner_pilot_hours(p_company uuid,p_request uuid,p_approve boolean,p_note text)
+create or replace function cali_workspace.v2_decide_partner_pilot_hours(p_company uuid,p_request uuid,p_approve boolean,p_note text)
 returns uuid language plpgsql security definer set search_path='' as $$
 declare
   actor uuid:=cali_session_guard.require_phase4_role(p_company,'admin');
   submission cali_session_guard.phase5_partner_hours;
   invitation cali_session_guard.phase4_staff_invites;
+  timer cali_workspace.work_timers;
   next_status text:=case when p_approve then 'approved' else 'rejected' end;
   note text:=nullif(btrim(p_note),'');
   posted uuid;
@@ -110,9 +201,23 @@ begin
     if invitation.revoked_at is not null or not cali_session_guard.phase4_staff_binding(
       p_company,invitation.member_id,invitation.member_revision,submission.actor_id
     ) then raise exception using errcode='42501',message='A atribuição do Partner mudou.'; end if;
-    posted:=cali_workspace.add_manual_hour_entry(p_company_id=>p_company,p_work_date=>submission.day,
-      p_minutes=>submission.minutes,p_description=>submission.description,p_client_visible=>false,
-      p_internal_note=>'Equipe CALI · Justificativa: '||submission.justification);
+    if submission.timer_id is null then
+      posted:=cali_workspace.add_manual_hour_entry(p_company_id=>p_company,p_work_date=>submission.day,
+        p_minutes=>submission.minutes,p_description=>submission.description,p_client_visible=>false,
+        p_internal_note=>'Equipe CALI · Justificativa: '||submission.justification);
+    else
+      select t.* into timer from cali_workspace.work_timers t
+      join cali_session_guard.phase5_partner_timers p on p.timer_id=t.id and p.invite_id=submission.invite_id
+      where t.id=submission.timer_id and t.company_id=p_company and t.user_id=submission.actor_id
+        and t.status='stopped' and t.stopped_at is not null for share of t;
+      if not found then raise exception using errcode='40001',message='O cronômetro mudou ou está indisponível.'; end if;
+      insert into cali_workspace.hour_entries(company_id,project_id,deliverable_id,task_id,account_record_id,
+        cycle_id,work_date,minutes,description,category,client_visible,created_by,source_type,started_at,ended_at,internal_note)
+      values(p_company,timer.project_id,timer.deliverable_id,timer.task_id,timer.account_record_id,
+        timer.cycle_id,submission.day,submission.minutes,submission.description,timer.category,
+        false,submission.actor_id,'timer',timer.started_at,timer.stopped_at,submission.justification)
+      returning id into posted;
+    end if;
   end if;
   update cali_session_guard.phase5_partner_hours set status=next_status,decided_by=actor,
     decision_note=note,decided_at=clock_timestamp(),hour_id=posted where id=p_request;
@@ -124,8 +229,10 @@ end;
 $$;
 
 revoke all on function cali_workspace.v2_submit_partner_pilot_hours(uuid,uuid,date,integer,text,text),
+  cali_workspace.v2_adjust_partner_pilot_hours(uuid,uuid,uuid,date,integer,text,text),
   cali_workspace.v2_list_partner_pilot_hour_requests(uuid,boolean,integer),
   cali_workspace.v2_decide_partner_pilot_hours(uuid,uuid,boolean,text) from public,anon,authenticated,service_role;
 grant execute on function cali_workspace.v2_submit_partner_pilot_hours(uuid,uuid,date,integer,text,text),
+  cali_workspace.v2_adjust_partner_pilot_hours(uuid,uuid,uuid,date,integer,text,text),
   cali_workspace.v2_list_partner_pilot_hour_requests(uuid,boolean,integer),
   cali_workspace.v2_decide_partner_pilot_hours(uuid,uuid,boolean,text) to authenticated;

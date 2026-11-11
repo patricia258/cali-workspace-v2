@@ -8,7 +8,7 @@ Na rodada final, usar empresas e dados de teste no projeto separado de homologa�
 
 | Item | Ação de Felipe ou da equipe técnica |
 | --- | --- |
-| Link da V2 | Definir a URL de homologação. Hoje Equipe, dados mensais, DISC e as consultas piloto da fase 4 dependem do modo de desenvolvimento, e o acesso A/B, arquivos privados e DISC aceitam origens locais específicas. Para Patrícia testar do próprio computador via link, preparar um preview protegido, adaptar os gates ao domínio de teste, configurar origens e callbacks e trocar os links locais nos e-mails. Conferir login, link de convite e PDF nessa URL antes do envio. |
+| Link da V2 | Definir o alias protegido e preparar o projeto separado. O recorte de estreia usa a origem exata para login, DISC, Forms, Agenda e Documentos. Configurar as funções do [runbook de preview](RUNBOOK.md#preview-protegido-para-homologação) e conferir login, convite, callback e PDF no endereço escolhido. |
 | Banco e acesso | Apontar o frontend para o projeto de homologação em modo Supabase, com URL e chave pública. Conferir serviços de login, arquivos e DISC, Auth, aceite vigente e documentos sintéticos. Preparar a conta Admin de Patrícia com MFA e os vínculos Cliente A/B com endereços de teste aprovados. Conferir revogação ou suspensão anterior antes de reautorizar um vínculo. |
 | Homologação acompanhada no ambiente local | Servir a V2 em `127.0.0.1:5173` para Admin e em `127.0.0.1:5181` e `127.0.0.1:5182` para os Clientes A/B, com `VITE_CALI_PILOT_ACCESS=true` nas duas instâncias Cliente. Esses endereços abrem na máquina que executa os servidores. |
 | E-mails de acesso e DISC | Conferir remetente, provedor e destinatários permitidos antes de solicitar códigos ou processar campanhas sintéticas. Patrícia recebe os próprios códigos pelo canal autorizado. Combinar com ela os destinatários de cada teste. |
@@ -16,6 +16,42 @@ Na rodada final, usar empresas e dados de teste no projeto separado de homologa�
 | Cron DISC | Manter desligado para o roteiro padrão. Para conferir e-mails do DISC, usar o processamento manual do Admin com campanhas sintéticas. Se a rodada incluir cadência automática, combinar a janela, revisar fila e os dois destinatários, conferir worker, Vault e hash do JWT, ligar somente para esse teste e aplicar o desligamento ao encerrar. |
 
 [Operação de acesso e automações](RUNBOOK.md) · [Contrato DISC](contracts/DISC_3.md)
+
+## Escolhas de fluxo para a Patrícia
+
+As respostas da Patrícia de 11/11 foram registradas na [DEC-29](DECISIONS.md#dec-29--fluxos-confirmados-pela-patrícia). As [regras aprovadas](PRODUCT_RULES.md#fluxos-confirmados-pela-patrícia-em-1111) substituem as alternativas da consulta anterior. O [roadmap](ROADMAP.md#entregas-da-dec-29) registra a candidata e os cenários de aceite de cada frente.
+
+### Contatos e redes em Minha conta
+
+Felipe autorizou o desenho em 11/11. **Acompanhar um assunto** abre Ocorrências. **Problemas de acesso** usa o mesmo e-mail institucional de suporte em Minha conta e no login. **Pedidos sobre meus dados** leva ao formulário da conta Cliente quando a operação estiver disponível e ao e-mail institucional de privacidade nos demais casos.
+
+**Sobre a CALI** oferece links opcionais para o Instagram e o LinkedIn institucional. Para verificar, abrir Minha conta com Cliente e Admin, conferir o destino por papel e comparar o suporte com o login. Na conta Cliente de teste, registrar e acompanhar um pedido em Minha conta e confirmar a consulta dos documentos em Termos.
+
+### Aceite dos quatro fluxos de estreia
+
+Felipe confirmou este escopo em 11/11/2026. Ele vai subir o preview no Vercel. O build habilita os serviços deste recorte na origem exata do preview e com o projeto Supabase separado. Configurar o backend de homologação, as origens autorizadas e as contas de teste antes da rodada. [Roteiro de preview](RUNBOOK.md#preview-protegido-para-homologação)
+
+| Fluxo | Prova local | Prova na homologação |
+| --- | --- | --- |
+| DISC | Reproduzir um convite legado sintético com rascunho no navegador e um convite novo da V2. Verificar slug/token, retomada, envio único e separação dos públicos do relatório. | Abrir o caminho e os parâmetros originais e semear o rascunho sintético na origem do preview. O navegador separa rascunhos por domínio. Conferir respostas concluídas e acesso por papel. |
+| Forms | Exercitar resolução do mesmo slug, coleta condicional, anexo, recibo repetido, QR/cartão, prévia, planilha e restauração. Simular o transporte do e-mail. | Confirmar que um link de formulário já aberto preserva identidade, versão, respostas e anexos. Verificar prévia pelo endereço de homologação, exportação e confirmação única para destinatário de teste. |
+| Calendar e Meet | Simular o Google ao criar, remarcar e cancelar. Verificar a identidade do evento, repetição da operação e resultado de falha externa. | Usar o calendário de teste e as credenciais existentes após conferir escopos, callback e calendário selecionado. Criar o link Meet e conferir a remarcação e o cancelamento do evento. Confirmar que os convidados ficam registrados no Workspace e que o preview não envia convites pelo Google. |
+| Drive | Exercitar permissões, troca de conta, cópia de arquivo legado e PDF V2, pasta mista e retomada de cópia parcial. | Conectar a conta de teste, copiar arquivo e pasta, verificar o destino, repetir sem duplicar e confirmar a separação entre empresas. |
+
+## Regressão do PR #3 no preview
+
+Usar Admin, Clientes A/B e Partner com dados sintéticos. Registrar SHA, origem, papel, cenário, resultado e evidência. Testar desktop e celular com navegação direta, recarga, teclado e diálogos de confirmação.
+
+| Percurso | Evidência esperada |
+| --- | --- |
+| Empresa e pré-cadastro | Abrir o mesmo cadastro nas abas. Enviar o link ao cliente de teste, completar os dados no Admin e confirmar contrato e acessos. Uma reserva recusada mantém a ficha sem liberação. Após liberar, cada destinatário autorizado completa o primeiro login. |
+| Início e atendimento Cliente | Mostrar o plano e as pessoas designadas para a conta. Abrir uma ocorrência por assunto, seguir mensagens, arquivos, horas e aprovações com a visibilidade correta. Conferir Termos e pedidos pessoais em Minha conta. |
+| Proposta, relatório e devolutiva | Partner prepara material no escopo atribuído. Admin devolve para ajuste ou incorpora ao fluxo oficial. Conferir o conteúdo revisado e cancelar em cada confirmação. Enviar e reenviar a mesma versão por Admin. Repetir a mesma tentativa sem duplicar. Em Propostas, verificar as respostas do portal pela oportunidade e pelo Admin de Forms. |
+| Horas Partner | Navegar com o cronômetro aberto, testar inatividade, recarregar e localizar o alerta. Verificar o aviso por e-mail para os destinatários de teste. Corrigir tempo com justificativa e conferir o lançamento após revisão Admin. |
+| Satisfação e PDF | Com a mesma empresa, comparar mês e período completo na tela e no PDF. Conferir avaliações positivas, notas baixas, tendência e quantidades de solicitações respondidas, pendentes e encerradas sem resposta. Exercitar também o PDF executivo privado. |
+| Controles de acesso | Conferir Admin com MFA, Clientes A/B, Partner com e sem atribuição, expiração e revogação. Confirmar que outra empresa ou outro parceiro não lê o material, nem acessa diretamente seu PDF, anexo ou ação. |
+
+Antes do aceite, conferir também os [quatro fluxos de estreia](#aceite-dos-quatro-fluxos-de-estreia). Felipe publica a revisão no Vercel. A configuração e o [preflight do Supabase isolado](RUNBOOK.md#preview-protegido-para-homologação) antecedem os testes pela URL.
 
 ## Roteiro da Patrícia
 

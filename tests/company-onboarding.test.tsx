@@ -1,5 +1,5 @@
 import { StrictMode } from 'react';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createMemoryHistory } from '@tanstack/react-router';
 import { describe, expect, it, vi } from 'vitest';
@@ -57,19 +57,32 @@ async function add(user: ReturnType<typeof userEvent.setup>, email = 'novo@examp
   await screen.findByRole('button', { name: `Revogar acesso de ${email}` });
 }
 describe('jornada demonstrativa de cadastro, adesão e gestão de acessos', () => {
+  it('oferece uma única ação de acesso por empresa em uma tabela responsiva', async () => {
+    const { user, router } = await openApp();
+    const table = await screen.findByRole('table');
+    expect(within(table).getByText('Aurora Tecnologia')).toBeTruthy();
+    expect(within(table).getByText('CALI Full')).toBeTruthy();
+    await user.click(screen.getByRole('button', { name: 'Ver acessos de Aurora Tecnologia' }));
+    await screen.findByRole('heading', { name: 'Acessos · Aurora Tecnologia' });
+    expect(router.state.location.search.companyId).toBe(mockCompanyIds.Aurora);
+  });
+
   it('cadastra, exige adesão, autoriza, edita nome e revoga/reativa com histórico', async () => {
     const errors = vi.spyOn(console, 'error');
     const { user, router, service } = await openApp();
     await user.click(screen.getByRole('button', { name: 'Cadastrar empresa' }));
     await user.type(screen.getByLabelText('Nome de apresentação'), 'Orbe sintética');
     await user.click(screen.getByRole('button', { name: 'Confirmar cadastro' }));
-    expect(await screen.findByRole('heading', { name: 'Acessos · Orbe sintética' })).toBeTruthy();
+    expect(await screen.findByRole('heading', { name: 'Ficha da empresa' })).toBeTruthy();
     expect(router.state.location.search.companyId).toBeTruthy();
     await waitFor(() => expect(document.activeElement?.id).toBe('company-basics-title'));
+    await user.click(screen.getByRole('tab', { name: 'Acessos' }));
     expect(
       (screen.getByRole('button', { name: 'Adicionar acesso' }) as HTMLButtonElement).disabled,
     ).toBe(true);
+    await user.click(screen.getByRole('tab', { name: 'Contrato' }));
     await register(user);
+    await user.click(screen.getByRole('tab', { name: 'Acessos' }));
     await add(user);
     await waitFor(() => expect(document.activeElement?.id).toBe('access-usage'));
     await user.click(screen.getByRole('button', { name: 'Editar nome de novo@example.test' }));
@@ -101,8 +114,11 @@ describe('jornada demonstrativa de cadastro, adesão e gestão de acessos', () =
 
   it('quatro acessos equivalentes ocupam vagas; revogar preserva o registro e só libera uma vaga', async () => {
     const { user, service } = await openApp(`/admin/clientes?companyId=${mockCompanyIds.Aurora}`);
+    await user.click(screen.getByRole('tab', { name: 'Acessos' }));
     await screen.findByText('4 de 4 autorizações utilizadas');
+    await user.click(screen.getByRole('tab', { name: 'Contrato' }));
     await register(user);
+    await user.click(screen.getByRole('tab', { name: 'Acessos' }));
     expect(
       (screen.getByRole('button', { name: 'Adicionar acesso' }) as HTMLButtonElement).disabled,
     ).toBe(true);
@@ -136,7 +152,8 @@ describe('jornada demonstrativa de cadastro, adesão e gestão de acessos', () =
   });
 
   it('capacidade indisponível preserva consulta sem mostrar cadastro/adesão/gestão', async () => {
-    await openApp(`/admin/clientes?companyId=${mockCompanyIds.Aurora}`, true);
+    const { user } = await openApp(`/admin/clientes?companyId=${mockCompanyIds.Aurora}`, true);
+    await user.click(screen.getByRole('tab', { name: 'Acessos' }));
     expect(
       await screen.findByRole('heading', { name: 'Acessos · Aurora Tecnologia' }),
     ).toBeTruthy();
@@ -152,6 +169,7 @@ describe('jornada demonstrativa de cadastro, adesão e gestão de acessos', () =
     const save = vi
       .spyOn(management, 'registerAdhesion')
       .mockRejectedValue(new Error('Registro indisponível.'));
+    await user.click(screen.getByRole('tab', { name: 'Contrato' }));
     await user.click(await screen.findByRole('button', { name: 'Registrar adesão' }));
     await user.type(screen.getByLabelText('Referência da formalização'), 'Rascunho de referência');
     await user.click(screen.getByRole('button', { name: 'Registrar referência' }));
@@ -160,6 +178,7 @@ describe('jornada demonstrativa de cadastro, adesão e gestão de acessos', () =
       'Rascunho de referência',
     );
     expect(save).toHaveBeenCalledOnce();
+    await user.click(screen.getByRole('tab', { name: 'Acessos' }));
     expect(
       (screen.getByRole('button', { name: 'Adicionar acesso' }) as HTMLButtonElement).disabled,
     ).toBe(true);

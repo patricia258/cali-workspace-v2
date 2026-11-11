@@ -1,7 +1,7 @@
 import { FeedbackMessage } from '../../../components/ds/feedback/FeedbackMessage';
 import { useEffect, useState, type ReactNode } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useRouteContext } from '@tanstack/react-router';
+import { getRouteApi, Link, useRouteContext } from '@tanstack/react-router';
 import {
   partnerModule,
   hasPartnerItemDetail,
@@ -19,8 +19,11 @@ import { WorkspacePagination } from '../../../components/workspace/WorkspacePagi
 import { workspaceLabel } from '../../../components/workspace/workspace-labels';
 import { PartnerItemDetail } from './components/PartnerItemDetail';
 import { PartnerHoursQueue } from './components/PartnerHoursQueue';
+import { PartnerProposalDrafts } from './components/PartnerProposalDrafts';
 import { PartnerTimer } from './components/PartnerTimer';
 import { PartnerReviewQueue } from './components/PartnerReviewQueue';
+import { PartnerReportDraftsPanel } from './components/PartnerReportDraftsPanel';
+import { PartnerMapaOpinionDrafts } from './components/PartnerMapaOpinionDrafts';
 import { WorkspaceFrame } from '../../../app/WorkspaceFrame';
 import { WorkspaceNavLabel } from '../../../app/WorkspaceNavLabel';
 
@@ -36,6 +39,18 @@ const labels = {
 } as const satisfies Record<PartnerModule, string>;
 const panel =
   'tw:grid tw:min-w-0 tw:gap-3 tw:rounded-control tw:border tw:border-border-default tw:bg-panel tw:p-4';
+const partnerRoute = getRouteApi('/equipe');
+// Ordem da navegação Partner do app.cali, aplicada só aos módulos atribuídos na V2.
+const partnerNavigation = [
+  'team',
+  'projects',
+  'hours',
+  'calendar',
+  'records',
+  'documents',
+  'reports',
+  'notices',
+] as const satisfies readonly PartnerModule[];
 
 type Ready = Extract<Awaited<ReturnType<PartnerPilot['read']>>, { status: 'ready' }>;
 
@@ -67,6 +82,7 @@ function PartnerItems({
   access: Ready;
   module: PartnerModule;
 }) {
+  const { partnerReportDrafts } = useRouteContext({ from: '__root__' });
   const [page, setPage] = useState(1);
   const [item, setItem] = useState<string>();
   const [returnItem, setReturnItem] = useState<string>();
@@ -163,9 +179,15 @@ function PartnerItems({
         <FeedbackState kind="empty">Nenhum registro nesta página.</FeedbackState>
       )}
       <WorkspacePagination total={result.data.total} page={page} change={setPage} />
+      {module === 'reports' && partnerReportDrafts && (
+        <PartnerReportDraftsPanel
+          service={partnerReportDrafts}
+          company={access.company}
+          actor={access.actor}
+        />
+      )}
       {module === 'hours' && (
         <>
-          <PartnerTimer api={api} actor={access.actor} company={access.company} />
           <PartnerHoursQueue
             api={api}
             actor={access.actor}
@@ -187,39 +209,64 @@ function PartnerModules({
   access: Ready;
   actions?: ReactNode;
 }) {
-  const [selected, setSelected] = useState<PartnerModule>();
+  const { modulo } = partnerRoute.useSearch();
   const available = partnerModule.options.filter((module) => access.modules.includes(module));
-  const active = selected && available.includes(selected) ? selected : available[0];
+  const denied = Boolean(modulo && !available.includes(modulo));
+  const active = denied ? undefined : (modulo ?? available[0]);
   return (
     <WorkspaceFrame
       title={active ? labels[active] : 'Equipe CALI'}
       area="Equipe CALI"
       actions={actions}
-      navigation={
-        active &&
-        available.map((module) => (
-          <Button
-            key={module}
-            variant="secondary"
-            aria-pressed={active === module}
-            onClick={() => setSelected(module)}
-          >
-            <WorkspaceNavLabel label={labels[module]} />
-          </Button>
-        ))
-      }
+      modules={partnerNavigation
+        .filter((module) => available.includes(module))
+        .map((module) => ({
+          label: labels[module],
+          element: (
+            <Link
+              to="/equipe"
+              search={{ modulo: module }}
+              activeOptions={{ exact: true, includeSearch: true, explicitUndefined: true }}
+              inactiveProps={active === module ? { 'aria-current': 'page' } : undefined}
+            >
+              <WorkspaceNavLabel label={labels[module]} />
+            </Link>
+          ),
+        }))}
     >
       <div className="tw:grid tw:min-w-0 tw:gap-4 tw:wrap-anywhere">
-        <section className={panel} aria-label="Empresa atribuída">
-          <p className="tw:m-0 tw:text-caption tw:font-semibold tw:text-brand">Empresa atribuída</p>
-          <h2 className="tw:m-0 tw:text-section tw:font-semibold">{access.companyName}</h2>
+        <section
+          className={`${panel} tw:flex tw:items-center tw:gap-4`}
+          aria-label="Empresa atribuída"
+        >
+          <span
+            aria-hidden="true"
+            className="tw:grid tw:size-11 tw:shrink-0 tw:place-items-center tw:rounded-media tw:border tw:border-border-default tw:bg-ivory tw:font-semibold tw:text-brand"
+          >
+            {access.companyName.trim().slice(0, 1).toLocaleUpperCase('pt-BR')}
+          </span>
+          <div className="tw:min-w-0">
+            <p className="workspace-eyebrow tw:m-0">Empresa atribuída</p>
+            <h2 className="tw:mt-1 tw:mb-0 tw:text-section tw:font-semibold">
+              {access.companyName}
+            </h2>
+          </div>
         </section>
+        {available.includes('hours') && (
+          <PartnerTimer api={api} actor={access.actor} company={access.company} />
+        )}
+        <PartnerProposalDrafts company={access.company} actor={access.actor} />
+        <PartnerMapaOpinionDrafts />
         {active ? (
           <PartnerItems key={active} api={api} access={access} module={active} />
         ) : (
-          <FeedbackState kind="empty">Nenhum módulo de homologação atribuído.</FeedbackState>
+          <FeedbackState kind="empty">
+            {denied
+              ? 'Este módulo não está disponível para o seu acesso.'
+              : 'Nenhum módulo de homologação atribuído.'}
+          </FeedbackState>
         )}
-        {(available.includes('projects') || available.includes('records')) && (
+        {!denied && (available.includes('projects') || available.includes('records')) && (
           <PartnerReviewQueue
             api={api}
             company={access.company}
@@ -320,8 +367,8 @@ function PartnerGate({ api, actions }: { api: PartnerPilot; actions?: ReactNode 
       content = (
         <CodeForm
           api={api}
-          codeLength={8}
-          qa
+          codeLength={api.codeLength}
+          qa={api.qa}
           onConfirmed={async () => {
             await query.refetch();
           }}

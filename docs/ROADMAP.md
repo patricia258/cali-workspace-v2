@@ -14,6 +14,8 @@ Todos os IDs FLOW-01 a FLOW-18 permanecem rastreados. A rotina Admin/Cliente vem
 
 **Organização do frontend em 09/11.** Páginas Admin, Cliente, Partner, acesso e públicas migradas para a [estrutura por área](ARCHITECTURE.md#organização-das-páginas). Componentes compartilhados e DS separados. Mocks de Empresas mantidos na composição local. Prévias e folhas exclusivas removidas após regressão local. Aceite visual e validação pós-publicação seguem como etapas próprias.
 
+**Escopo de estreia confirmado em 11/11 no PR #3.** DISC deve preservar os links já enviados. Forms deve preservar links, respostas e anexos e incluir compartilhamento, confirmação, planilha e lixeira. Agenda deve sincronizar com Calendar/Meet usando as credenciais existentes. Documentos deve oferecer cópia de arquivo e pasta de entregável para o Drive. [Critérios locais e de homologação](HOMOLOGACAO_PATRICIA.md#aceite-dos-quatro-fluxos-de-estreia).
+
 ## Recuperação e separação de ambientes — prioridade atual
 
 DEC-28 foi revisada em 09/11/2026. O CALI MAPA atual é produção e já está online. Primeiro concluir os ajustes e validar o estado de produção. Depois criar a homologação separada a partir da versão reconciliada do código, schema e configuração. [Cobertura, ordem e aceite](RUNBOOK.md#backup-restauração-e-ambientes--dec-28).
@@ -41,6 +43,21 @@ O ensaio de recuperação com fixtures passou localmente. A separação dos proj
 | 7 — Preparação de release | 6 e aceites exigidos | Configuração de destino, observabilidade, corte, backup/restauração e rollback revisáveis | Planejada; sem publicação implícita |
 
 Não há estimativas em dias nem responsáveis individuais inventados. Nomear responsável técnico e validador funcional/UX/dados/operação antes do aceite aplicável. Resumo Admin tem contrato fechado em DEC-19/RESUMO-01 e precisa de prova técnica; a versão Partner será definida em sua fase, sem bloquear Cliente/Admin.
+
+## Entregas da DEC-29
+
+As [regras confirmadas pela Patrícia](PRODUCT_RULES.md#fluxos-confirmados-pela-patrícia-em-1111) estão implementadas na candidata do PR #3. O próximo passo é preparar a [origem isolada](RUNBOOK.md#preview-protegido-para-homologação) e executar a [regressão do preview](HOMOLOGACAO_PATRICIA.md#regressão-do-pr-3-no-preview).
+
+| Frente | Candidata do PR #3 | Aceite em homologação |
+| --- | --- | --- |
+| Início Cliente e Minha conta — FLOW-04/10/14/18 | Mostra plano e responsáveis designados. Ocorrências concentra o atendimento. Minha conta reúne perfil, suporte, pedidos pessoais e links institucionais. | Conferir empresas com um e dois responsáveis, atalhos, suporte no login e pedido de privacidade em Minha conta. |
+| Empresas e acessos — FLOW-01/02 | Ficha única com abas Cadastro, Contrato e Acessos. Pré-cadastro por link, comprovação do contrato e reserva de todos os acessos em transação única. | Testar obrigatórios, contrato, falha parcial, repetição e primeiro login de cada destinatário sintético. |
+| Envio, propostas e devolutivas — FLOW-03/12/17 | Revisão interna do material Partner em Relatórios, Propostas e Mapa. Envio e reenvio da versão vigente com dupla confirmação. Respostas do portal consultadas no Admin, vinculadas às oportunidades quando aplicável. | Testar atribuição, devolução para ajuste, aprovação, cancelamento em cada confirmação e entrega única por tentativa. |
+| Equipe e parceiros — FLOW-07/15 | Cronômetro persistente na navegação Partner, alerta de inatividade, recuperação com justificativa e fila Admin para horas manuais e cronometradas. | Validar atribuição, pausa automática, um aviso por destinatário, recuperação após fechar a sessão e lançamento só após aprovação. |
+| Satisfação e PDF — FLOW-04/16 | Filtros por empresa, mês e período completo. Tendências, notas baixas, positivas e contagens de solicitações respondidas, aguardando e sem resposta na tela e no PDF. | Comparar os mesmos recortes com as solicitações de teste e conferir o PDF exportado. |
+| Histórico por assunto — FLOW-06/10/16 | O detalhe da ocorrência ou do entregável reúne mensagens, arquivos, horas e aprovações vinculados. | Comparar com as entradas e revisões de teste. Conferir isolamento entre empresas, assuntos e papéis. |
+
+DISC, Forms, Calendar/Meet e Drive seguem o [roteiro dos quatro fluxos de estreia](HOMOLOGACAO_PATRICIA.md#aceite-dos-quatro-fluxos-de-estreia). A validação local usa fixtures. O aceite depende da configuração do projeto isolado e das provas pela URL do Vercel.
 
 ## Fase 1 — Fundação mínima para a primeira entrega
 
@@ -217,7 +234,7 @@ Cada linha é uma entrega independente, incluindo contrato/adaptador real de tes
 - [x] Conectar pendência Cliente, métricas e indicadores essenciais preservando fórmulas. Aviso do Início desaparece após confirmar; nulos e denominador zero permanecem explícitos.
 - [x] Homologar A/B/Admin no navegador integrado e registrar testes focados, limites e rollback. Confirmação/reconfirmação, vaga/cancelamento, correção Admin, mês anterior vazio, recarga, contexto e mobile passaram. Complemento de leitura direta aplicado somente A/B.
 
-**Frontend antes do lançamento.** A paridade visual do layout, navegação e Equipe por perfil é conferida contra a [main da V2](HOMOLOGACAO_PATRICIA.md#revisão-visual-contra-a-main-da-v2). Felipe autorizou em 05/11 a continuidade da homologação funcional na composição simplificada. A substituição visual fica para a implementação do frontend final.
+**Frontend antes do lançamento.** A adequação visual de todos os fluxos parte do JSX, CSS e assets do `app.cali`, conforme o [plano de consolidação](COMPARACAO_FUNCIONAL_APP_CALI.md#plano-de-consolidação). A V2 é a base técnica. Acompanhar as fontes, diferenças contratuais e validação no [estado do porte](COMPARACAO_FUNCIONAL_APP_CALI.md#estado-do-trabalho-local). A [comparação com a main da V2](HOMOLOGACAO_PATRICIA.md#revisão-visual-contra-a-main-da-v2) registra a rodada anterior de homologação.
 
 DS, tabelas, campos, overlays, modelos/hooks e cache necessários são entregues junto dos consumidores. Declarar quem possui cada estado: URL para contexto compartilhável, local para transitório, cache para respostas remotas e context somente para responsabilidades realmente transversais. Views não importam SDK ou fixtures.
 

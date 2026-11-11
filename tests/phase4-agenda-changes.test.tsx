@@ -34,6 +34,10 @@ it('envia a opção de remarcação escolhida pelo Admin e mantém o pedido pend
           ],
         }}
         agenda={{
+          calendarSyncEnabled: false,
+          syncConfirmedCalendar: async () => ({ status: 'disabled' }),
+          syncCancelledExtraCalendar: async () => ({ status: 'disabled' }),
+          syncApprovedCalendarChange: async () => ({ status: 'disabled' }),
           decideChange,
           saveMinutes: unexpected,
           material: unexpected,

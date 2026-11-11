@@ -34,9 +34,9 @@ No CALI MAPA, a rodada de Auth para preparar a fila gravou uma solicitação ant
 
 ## Cronômetro e vínculos
 
-Aplicar [cronômetro](../../supabase/proposals/phase-5/partner-timer.sql) após a admissão. O vínculo opcional usa os IDs sintéticos já inscritos em Projetos ou Ocorrências e exige também a atribuição ao módulo de origem. O servidor revalida a cadeia projeto, entregável e subtarefa, o estado operacional e a ocorrência aberta. A operação usa os registros nativos de timer e horas, sem conceder acesso ao contrato legado.
+Aplicar [fila de horas](../../supabase/proposals/phase-5/partner-hour-review.sql) e [cronômetro](../../supabase/proposals/phase-5/partner-timer.sql), nesta ordem e na mesma transação, após a admissão e os recibos de operação. Conferir as definições legadas antes de aplicar em homologação. O vínculo opcional usa os IDs sintéticos já inscritos em Projetos ou Ocorrências e exige também a atribuição ao módulo de origem. O servidor revalida a cadeia projeto, entregável e subtarefa, o estado operacional e a ocorrência aberta. A operação usa os registros nativos de timer e horas, sem conceder acesso ao contrato legado.
 
-Somente o titular do convite opera o cronômetro; um segundo timer aberto é recusado. Ao encerrar, o servidor descarta trechos inferiores a 30 segundos e arredonda os demais para cima. Registra a hora privada, com o mesmo contexto, e protege o retry por identificador de operação. A [prova no CALI MAPA](../../supabase/proposals/phase-5/prove-partner-timer.sql) foi revertida: bloqueio de outra empresa e alvo não inscrito, unicidade de timer aberto, vínculo com subtarefa, descarte de trecho curto, gravação privada de 2 minutos em 61 segundos, repetição sem duplicar e corte após revogação.
+Somente o titular do convite opera o cronômetro; um segundo timer aberto é recusado. Ao encerrar, o servidor descarta trechos inferiores a 30 segundos e arredonda os demais para cima. A DEC-29 encaminha o trecho à mesma fila das horas manuais. Aprovação Admin grava uma única hora privada com autor, data, duração e vínculos do cronômetro. Recusa preserva a solicitação e o motivo. O encerramento automático e o fechamento associado ao trabalho também encaminham os timers do piloto à fila. O caminho legado de encerramento manual recusa esses timers. A [prova local](../../supabase/proposals/phase-5/prove-partner-timer.sql) cobre aprovação, recusa, repetição e vínculo preservado. A rotina de inatividade foi exercitada localmente com as definições versionadas da V1. A correção está pendente de aplicação em homologação. Em caso de reversão, retirar o acesso ao piloto e preservar a fila e os recibos.
 
 ## Catálogos adicionais
 
@@ -71,3 +71,10 @@ Foram aceitos dois envios no total, um por janela. Na primeira janela o código 
 ## Limites de fechamento
 
 O recorte técnico do piloto cobre admissão por código, consultas dos módulos, horas, resposta a ocorrência, PDFs V2 e fila das duas revisões. Não inclui operação Partner no acervo, anexos ou notas internas de ocorrências, demais pedidos de alteração ou publicação, nem ampliação do Mapa. Este recorte técnico está fechado no CALI MAPA. O canal OTP temporário não é infraestrutura de rollout. Público e presença de horas no resumo diário Partner dependem de decisão CALI em DEC-19.
+
+
+## Revisão de materiais e recuperação no preview
+
+O Partner entra com código, MFA, convite e termos vigentes. O cronômetro permanece visível entre módulos. A pausa automática gera alerta e conserva o trecho na fila para ajuste com justificativa. A aprovação Admin publica o lançamento de horas. O [runbook](../RUNBOOK.md#preview-protegido-para-homologação) descreve a preparação do agendador e do transporte de teste para a prova de inatividade.
+
+Relatórios exigem acesso ao módulo. Propostas e pareceres do Mapa exigem atribuição ao registro. A revisão Admin pode devolver o material ou incorporá-lo ao fluxo oficial. Entrega e reenvio seguem a dupla confirmação da revisão vigente. Conferir o [roteiro da candidata](../HOMOLOGACAO_PATRICIA.md#regressão-do-pr-3-no-preview) com dois Partners e empresas distintas.
